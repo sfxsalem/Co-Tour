@@ -37,8 +37,8 @@ Prerequisites
 
 This project requires the following software:
 
- * Python stable release 3.8.0        (https://www.python.org/downloads/release/python-380/)
- * TensorFlow stable release 2.3.0    (https://www.tensorflow.org/install)
+ * Python 3.12
+ * Docker with Docker Compose (optional)
 
 
 Configuration
@@ -52,8 +52,44 @@ Configuration
 
 
 
-Deployment
--------------
+Local development
+-----------------
+
+The recommendation system is being migrated incrementally from Django to FastAPI. Both web adapters currently call the same framework-independent service in `web_app/cotour/`; recommendation requests no longer perform live geocoding or fit a new clustering model on every request.
+
+Create a virtual environment and install the reproducible web dependency lock:
+
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install --require-hashes -r web_app/requirements.txt
+```
+
+Run the migrated FastAPI slice:
+
+```bash
+cd web_app
+LOKY_MAX_CPU_COUNT=2 uvicorn cotour_web.app:app --reload
+```
+
+The migrated application is available at [http://localhost:8000](http://localhost:8000), its OpenAPI documentation at [http://localhost:8000/docs](http://localhost:8000/docs), and health check at [http://localhost:8000/health](http://localhost:8000/health). The home page and tourism recommendation flow are currently migrated.
+
+Run the test suites from the repository root:
+
+```bash
+LOKY_MAX_CPU_COUNT=2 PYTHONPATH=web_app .venv/bin/python -m unittest discover -s web_app/tests -v
+DJANGO_SECRET_KEY=test-only DJANGO_DEBUG=1 LOKY_MAX_CPU_COUNT=2 .venv/bin/python web_app/manage.py test webapp
+```
+
+Temporary Django rollback and not-yet-migrated analytics pages:
+
+```bash
+cd web_app
+DJANGO_SECRET_KEY=local-only DJANGO_DEBUG=1 ../.venv/bin/python manage.py runserver
+```
+
+Container deployment
+--------------------
 
 After installing the prerequisites you should set up a Python virtual environment using the command window:
 ```
@@ -76,22 +112,22 @@ $ pip install -r requirements.txt
 
 This command can be used to create an environment and install all the required packages.
 
-To access the Web App, first install Docker on your local machine then with the command window run:
+The existing Django container remains the default until the flow-analysis and hotspot-forecast pages reach FastAPI parity:
 
-```
-$ cd TO ROOT
-$ docker-compose build
-$ docker-compose up -d
-```
-The Web App is bound to the local loopback interface and should be accessible at http://localhost:8000/. Gunicorn serves the application; Django's development server is not used.
-
-Before the first run, create the local environment file and replace the placeholder secret:
-
-```
-$ cp .env.example .env
+```bash
+cp .env.example .env
+docker compose up --build -d web
 ```
 
-Never reuse a committed or shared Django secret.
+It is bound to the local loopback interface at [http://localhost:8000](http://localhost:8000). Gunicorn serves Django; the development server is not used.
+
+Run the opt-in FastAPI migration container in parallel at [http://localhost:8001](http://localhost:8001):
+
+```bash
+docker compose --profile migration up --build -d api
+```
+
+Do not switch the default service to FastAPI until every public route has parity tests. Never reuse a committed or shared Django secret.
 
 
 Additional Features
