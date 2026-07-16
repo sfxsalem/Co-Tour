@@ -140,3 +140,52 @@ class FastAPIApplicationTests(TestCase):
         policy = response.headers["content-security-policy"]
         self.assertIn("script-src 'self' https://unpkg.com", policy)
         self.assertNotIn("'unsafe-inline'", policy)
+
+    def test_tourist_flow_page_is_server_rendered(self):
+        response = self.client.get("/tourist_flow_analysis/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Tourist Flow Analysis", response.text)
+        self.assertEqual(response.text.count('<svg role="img"'), 2)
+        self.assertEqual(response.text.count('data-testid="cluster-point"'), 20)
+        self.assertEqual(response.text.count('data-testid="origin-point"'), 23)
+        self.assertEqual(response.text.count('data-testid="cluster-row"'), 20)
+        self.assertEqual(response.text.count('data-testid="origin-row"'), 23)
+        self.assertIn("English Garden", response.text)
+
+    def test_tourist_flow_api_returns_typed_results(self):
+        response = self.client.get("/api/v1/tourist-flow")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["place"], "Olympiapark")
+        self.assertEqual(payload["season"], "summer_pre_covid")
+        self.assertEqual(len(payload["attractions"]), 20)
+        self.assertEqual(len(payload["origins"]), 23)
+        self.assertEqual(payload["origins"][0]["country"], "Germany")
+        self.assertEqual(payload["diagnostics"][0]["subject"], "English Garden")
+
+    def test_tourist_flow_routes_reject_unknown_options(self):
+        for path in (
+            "/tourist_flow_analysis/?place=Unknown%20Attraction",
+            "/api/v1/tourist-flow?season=monsoon",
+        ):
+            with self.subTest(path=path):
+                self.assertEqual(self.client.get(path).status_code, 422)
+
+    def test_tourist_flow_routes_support_valid_empty_season(self):
+        query = "place=Bayerisches%20Nationalmuseum&season=winter_covid"
+        api_response = self.client.get(f"/api/v1/tourist-flow?{query}")
+        page_response = self.client.get(f"/tourist_flow_analysis/?{query}")
+
+        self.assertEqual(api_response.status_code, 200)
+        self.assertEqual(api_response.json()["origins"], [])
+        self.assertEqual(page_response.status_code, 200)
+        self.assertIn("No visitor-origin data", page_response.text)
+
+    def test_tourist_flow_page_keeps_strict_script_policy(self):
+        response = self.client.get("/tourist_flow_analysis/")
+
+        self.assertNotIn(
+            "'unsafe-inline'", response.headers["content-security-policy"]
+        )

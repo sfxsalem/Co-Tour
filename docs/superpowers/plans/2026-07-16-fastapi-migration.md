@@ -8,9 +8,9 @@
 
 **Tech Stack:** Python 3.12, FastAPI, Pydantic, Jinja2, HTMX-ready HTML, Pandas, scikit-learn, pytest/unittest, Django 5.2 retained during migration.
 
-## Migration status after phase 2
+## Migration status after phase 3
 
-The recommendation slice described below is complete. The next vertical slice also migrated the tourist hotspot forecast behind `cotour.forecasts.ForecastService`, with shared Django/FastAPI behavior, repository-relative artifacts, validated month inputs, CSP-safe server-rendered SVG maps, and `GET /api/v1/hotspot-forecast`. Django remains the default deployment until the flow-analysis and contact routes have parity.
+The recommendation and tourist-hotspot slices are complete. Phase 3 migrated tourist-flow analysis behind `cotour.flows.FlowService`, with shared Django/FastAPI behavior, complete artifact-catalog validation, deterministic cluster output, valid empty-season handling, explicit coordinate diagnostics, CSP-safe server-rendered SVG maps, and `GET /api/v1/tourist-flow`. Django remains the default deployment until the contact route has parity.
 
 ## Global Constraints
 

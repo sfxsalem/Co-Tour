@@ -55,7 +55,7 @@ Configuration
 Local development
 -----------------
 
-The application is being migrated incrementally from Django to FastAPI. Both web adapters now call framework-independent recommendation and hotspot-forecast services in `web_app/cotour/`. Requests use validated, repository-relative local artifacts; recommendation requests no longer perform live geocoding or fit a clustering model on every request.
+The application is being migrated incrementally from Django to FastAPI. Both web adapters now call framework-independent recommendation, hotspot-forecast, and tourist-flow services in `web_app/cotour/`. Requests use validated, repository-relative local artifacts; recommendation requests no longer perform live geocoding or fit a clustering model on every request.
 
 Create a virtual environment and install the reproducible web dependency lock:
 
@@ -77,6 +77,7 @@ The migrated application is available at [http://localhost:8000](http://localhos
 - `/` — server-rendered home page
 - `/tourism_recommendation_system/` and `POST /api/v1/recommendations`
 - `/tourist_hotspot_forecast/` and `GET /api/v1/hotspot-forecast`
+- `/tourist_flow_analysis/` and `GET /api/v1/tourist-flow`
 
 The hotspot API accepts optional ISO month query parameters, for example:
 
@@ -86,6 +87,14 @@ The hotspot API accepts optional ISO month query parameters, for example:
 
 Only months exposed by the local forecast artifacts are accepted. Invalid or unavailable values return HTTP 422.
 
+The tourist-flow API accepts repository-backed place and season values:
+
+```text
+/api/v1/tourist-flow?place=Olympiapark&season=summer_pre_covid
+```
+
+All 84 place/season combinations are validated. Seven COVID-period artifacts contain no origin observations and return an empty `origins` list rather than an error. The UI and API also expose a data diagnostic for the source coordinate that places English Garden outside Munich; that attraction is omitted from the Munich cluster map until the artifact is corrected.
+
 Run the test suites from the repository root:
 
 ```bash
@@ -93,7 +102,7 @@ LOKY_MAX_CPU_COUNT=2 PYTHONPATH=web_app .venv/bin/python -m unittest discover -s
 DJANGO_SECRET_KEY=test-only-secret-that-is-at-least-fifty-characters-long DJANGO_DEBUG=1 DJANGO_SECURE_SSL_REDIRECT=0 LOKY_MAX_CPU_COUNT=2 .venv/bin/python web_app/manage.py test webapp
 ```
 
-Temporary Django rollback for all routes, including the not-yet-migrated flow-analysis and contact pages:
+Temporary Django rollback for all routes, including the not-yet-migrated contact page:
 
 ```bash
 cd web_app
@@ -124,7 +133,7 @@ $ pip install -r requirements.txt
 
 This command can be used to create an environment and install all the required packages.
 
-The existing Django container remains the default until the flow-analysis and contact pages reach FastAPI parity:
+The existing Django container remains the default until the contact page reaches FastAPI parity:
 
 ```bash
 cp .env.example .env

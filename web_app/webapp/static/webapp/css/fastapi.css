@@ -36,4 +36,15 @@ fieldset { border: 1px solid var(--line); display: flex; gap: 1rem; margin: 0; }
 .ranking-card li::marker { color: var(--accent); font-weight: 800; }
 .historical-map { margin-top: 1.5rem; }
 .map-note { font-size: .82rem; margin-bottom: 0; }
-@media (max-width: 800px) { nav { flex-wrap: wrap; gap: .75rem; } .workspace, .features, .forecast-layout, .forecast-filters { grid-template-columns: 1fr; } .filter-panel { position: static; } .result-card { grid-template-columns: 2.5rem 100px 1fr; } .text-link { display: block; margin: 1rem 0 0; } }
+.flow-grid { display: grid; gap: 1.5rem; grid-template-columns: 1fr 1fr; }
+.data-note { background: #23251d; border-left: 3px solid var(--accent); color: var(--muted); padding: .85rem 1rem; }
+.data-note span { color: var(--ink); }
+.empty-state { color: var(--muted); margin: 1rem 0 0; text-align: center; }
+.flow-data { border-top: 1px solid var(--line); margin-top: 1rem; padding-top: 1rem; }
+.flow-data summary { color: var(--accent); cursor: pointer; font-weight: 800; min-height: 44px; padding: .6rem 0; }
+.table-scroll { overflow-x: auto; }
+.flow-data table { border-collapse: collapse; margin-top: .75rem; width: 100%; }
+.flow-data caption { color: var(--muted); padding: .5rem 0; text-align: left; }
+.flow-data th, .flow-data td { border-bottom: 1px solid var(--line); padding: .6rem; text-align: left; white-space: nowrap; }
+.flow-data thead th { color: var(--muted); font-size: .75rem; letter-spacing: .04em; text-transform: uppercase; }
+@media (max-width: 800px) { nav { flex-wrap: wrap; gap: .75rem; } .workspace, .features, .forecast-layout, .forecast-filters, .flow-grid { grid-template-columns: 1fr; } .filter-panel { position: static; } .result-card { grid-template-columns: 2.5rem 100px 1fr; } .text-link { display: block; margin: 1rem 0 0; } }
