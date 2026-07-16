@@ -1,4 +1,4 @@
-Django>=5.2,<5.3
+Django>=6.0.7,<6.1
 countrygroups>=0.13,<1
 fastapi>=0.116,<1
 folium>=0.19,<1
