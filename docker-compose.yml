@@ -1,12 +1,15 @@
-version: '3.8'
-
 services:
   web:
     build: ./web_app
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - ./web_app/:/usr/src/app/
+    restart: unless-stopped
     ports:
-      - 8000:8000
-    env_file:
-      - ./.env.dev
+      - "127.0.0.1:8000:8000"
+    environment:
+      DJANGO_SECRET_KEY: "${DJANGO_SECRET_KEY:?Set DJANGO_SECRET_KEY in an untracked .env file}"
+      DJANGO_DEBUG: "${DJANGO_DEBUG:-0}"
+      DJANGO_ALLOWED_HOSTS: "${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1,[::1]}"
+      DJANGO_CSRF_TRUSTED_ORIGINS: "${DJANGO_CSRF_TRUSTED_ORIGINS:-}"
+      DJANGO_SECURE_SSL_REDIRECT: "${DJANGO_SECURE_SSL_REDIRECT:-0}"
+      DJANGO_SESSION_COOKIE_SECURE: "${DJANGO_SESSION_COOKIE_SECURE:-0}"
+      DJANGO_CSRF_COOKIE_SECURE: "${DJANGO_CSRF_COOKIE_SECURE:-0}"
+      DJANGO_HSTS_SECONDS: "${DJANGO_HSTS_SECONDS:-0}"

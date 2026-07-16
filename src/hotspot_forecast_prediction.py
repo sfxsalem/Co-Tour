@@ -2,7 +2,8 @@ from datetime import datetime
 import tensorflow.keras
 import numpy as np
 import pandas as pd
-from pickle import load
+
+from scaler_io import inverse_transform, load_scalers, transform
 
 def create_sequences(dataset, in_steps=1, out_steps=1, dropNa=True):
     """Converts time series into a data set for supervised machine learning models"""
@@ -44,12 +45,12 @@ X_data = X_data_all[len(X_data_all)-1]
 # Reshape the input data to a 3 dim array
 X_data = np.reshape(X_data, (1,X_data.shape[0],X_data.shape[1]))
 
-# Load the xscaler
-xscalers = load(open('../data_scaler/xscalers.pkl', 'rb'))
+# Load inert scaler parameters. JSON cannot execute code during deserialization.
+scalers = load_scalers()
 
 X_data_scaled = X_data
 for i in range(X_data.shape[2]):
-    X_data_scaled[:, :, i] = xscalers[i].transform(X_data[:, :, i])
+    X_data_scaled[:, :, i] = transform(X_data[:, :, i], scalers["xscalers"][str(i)])
 
 # Get the places that we wanna predict
 places = dataset.columns[:23]
@@ -64,11 +65,8 @@ for idx in np.arange(len(places)):
     # Load the traind model
     model = tensorflow.keras.models.load_model("../ML_models/{}.h5".format(place))
 
-    # Load the xscaler
-    yscaler = load(open('../data_scaler/yscaler/{}.pkl'.format(place), 'rb'))
-
     # Predict
-    y_pred = yscaler.inverse_transform(model.predict(X_data_scaled))
+    y_pred = inverse_transform(model.predict(X_data_scaled), scalers["yscalers"][place])
 
     # Append prediction to the list of different places
     ret.append(pd.DataFrame(np.reshape(y_pred, y_pred.shape[1]), columns=[place]))

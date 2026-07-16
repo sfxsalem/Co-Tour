@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 import os
-from pickle import dump
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense,Flatten,Dropout,Conv1D, MaxPooling1D,LSTM
 from tensorflow.keras.callbacks import EarlyStopping
@@ -13,6 +12,8 @@ from scipy.stats import pearsonr
 
 # Ignore the warnings
 import sys
+
+from scaler_io import save_scalers
 if not sys.warnoptions:
     import warnings
     warnings.simplefilter("ignore")
@@ -147,11 +148,7 @@ for idx in np.arange(len(places)):
     # Save the standard scaler
     if not os.path.exists('../data_scaler'):
         os.makedirs('../data_scaler')
-    dump(xscalers, open('../data_scaler/xscalers.pkl', 'wb'))
-
-    if not os.path.exists('../data_scaler/yscaler'):
-        os.makedirs('../data_scaler/yscaler')
-    dump(yscaler, open('../data_scaler/yscaler/{}.pkl'.format(place), 'wb'))
+    save_scalers(xscalers, yscaler, place)
 
     # Parameters for model setup
     n_feats = X_train.shape[2]
