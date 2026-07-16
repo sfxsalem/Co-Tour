@@ -149,6 +149,8 @@ class FastAPIApplicationTests(TestCase):
         self.assertEqual(response.text.count('<svg role="img"'), 2)
         self.assertEqual(response.text.count('data-testid="cluster-point"'), 20)
         self.assertEqual(response.text.count('data-testid="origin-point"'), 23)
+        self.assertEqual(response.text.count('data-testid="cluster-row"'), 20)
+        self.assertEqual(response.text.count('data-testid="origin-row"'), 23)
         self.assertIn("English Garden", response.text)
 
     def test_tourist_flow_api_returns_typed_results(self):

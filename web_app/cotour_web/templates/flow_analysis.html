@@ -40,6 +40,20 @@
             </circle>
             {% endfor %}
         </svg>
+        <details class="flow-data">
+            <summary>View attraction cluster data</summary>
+            <div class="table-scroll">
+                <table>
+                    <caption>Mapped Munich attractions and their cluster assignments</caption>
+                    <thead><tr><th scope="col">Attraction</th><th scope="col">Cluster</th><th scope="col">Latitude</th><th scope="col">Longitude</th></tr></thead>
+                    <tbody>
+                    {% for point in result.attractions %}
+                    <tr data-testid="cluster-row"><th scope="row">{{ point.name }}</th><td>{{ point.cluster }}</td><td>{{ '%.4f'|format(point.latitude) }}</td><td>{{ '%.4f'|format(point.longitude) }}</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </details>
     </article>
 
     <article class="map-card">
@@ -55,6 +69,20 @@
             {% endfor %}
         </svg>
         {% if not result.origins %}<p class="empty-state">No visitor-origin data is available for this attraction and period.</p>{% endif %}
+        <details class="flow-data">
+            <summary>View visitor-origin data</summary>
+            <div class="table-scroll">
+                <table>
+                    <caption>Visitor-origin shares for {{ result.place }}</caption>
+                    <thead><tr><th scope="col">Country</th><th scope="col">Share</th><th scope="col">Latitude</th><th scope="col">Longitude</th></tr></thead>
+                    <tbody>
+                    {% for point in result.origins %}
+                    <tr data-testid="origin-row"><th scope="row">{{ point.country }}</th><td>{{ '%.1f'|format(point.share_percent) }}%</td><td>{{ '%.4f'|format(point.latitude) }}</td><td>{{ '%.4f'|format(point.longitude) }}</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </details>
     </article>
 </section>
 {% endif %}

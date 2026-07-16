@@ -37,21 +37,15 @@
                                 <div class="filter-sidebar">
                                     <h3 class="heading-3 font-weight-bold">Tourist Trajectory Analysis</h3>
                                     <p class="paragraph-2 font-weight-light">Explore the origin of tourists
-                                        for a selected attraction during the periods of pre and post COVID-19.</p>
+                                        for a selected attraction before and during the COVID-19 period.</p>
                                     <form>
                                         {% csrf_token %}
                                         <div class="form-group">
                                             <label for="tfa_season_select">Select a Season: </label>
                                             <select class="form-control" id="tfa_season_select"
                                                     name="tfa_season_select">
-                                                {% for season, value in SeasonList.items %}
-                                                {% if season == "summer_pre_covid" %}
-                                                <optgroup label="Pre-COVID">
-                                                {% endif %}
-                                                {% if season == "summer_covid" %}
-                                                <optgroup label="Post-COVID">
-                                                {% endif %}
-                                                <option value="{{season}}" {% if season == selected_season %} selected {% endif %} >{{value}}</option>
+                                                {% for option in SeasonList %}
+                                                <option value="{{option.code}}" {% if option.code == selected_season %} selected {% endif %}>{{option.label}} · {{option.group}}</option>
                                                 {% endfor %}
                                            </select>
                                         </div>

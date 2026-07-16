@@ -79,6 +79,14 @@ class FlowServiceTests(TestCase):
             with self.subTest(query=query), self.assertRaises(FlowInputError):
                 self.service.analyze(query)
 
+    def test_invalid_selection_error_does_not_reflect_attacker_input(self):
+        attacker_value = "<script>alert(1)</script>" * 10
+
+        with self.assertRaises(FlowInputError) as captured:
+            self.service.analyze(FlowQuery(place=attacker_value))
+
+        self.assertNotIn(attacker_value, str(captured.exception))
+
     def test_rejects_duplicate_cluster_rows_as_corrupt_artifacts(self):
         with TemporaryDirectory() as temporary_directory:
             root = Path(temporary_directory)

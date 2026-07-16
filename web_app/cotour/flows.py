@@ -100,10 +100,10 @@ class FlowService:
 
     def analyze(self, query: FlowQuery = FlowQuery()) -> FlowResult:
         if query.place not in self._options.places:
-            raise FlowInputError(f"Unknown tourist-flow place: {query.place}")
+            raise FlowInputError("Unknown tourist-flow place")
         season_codes = {season.code for season in self._options.seasons}
         if query.season not in season_codes:
-            raise FlowInputError(f"Unknown tourist-flow season: {query.season}")
+            raise FlowInputError("Unknown tourist-flow season")
 
         origins = self._load_origins(query.place, query.season)
         diagnostics = self._diagnostics
@@ -241,12 +241,14 @@ class FlowService:
         )
         result = tuple(
             VisitorOrigin(
-                country=str(row.country),
-                share_percent=float(row._1),
-                latitude=float(row.latitude),
-                longitude=float(row.longitude),
+                country=str(country),
+                share_percent=float(share_percent),
+                latitude=float(latitude),
+                longitude=float(longitude),
             )
-            for row in origins.itertuples(index=False)
+            for country, share_percent, latitude, longitude in origins.itertuples(
+                index=False, name=None
+            )
         )
         self._origin_cache[cache_key] = result
         return result

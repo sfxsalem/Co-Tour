@@ -28,12 +28,7 @@ class HomeView(TemplateView):
 class TfaView(TemplateView):
     template_name = 'webapp/tourist_flow_analysis.html'
     service = FlowService(settings.BASE_DIR / "data")
-    cluster_colors = {
-        0: "#3c78ff",
-        1: "#36a269",
-        2: "#ff9c3b",
-        3: "#9b72e8",
-    }
+    cluster_colors = ("#3c78ff", "#36a269", "#ff9c3b", "#9b72e8")
 
     def get_map(self, attractions):
         figure = folium.Figure()
@@ -43,7 +38,7 @@ class TfaView(TemplateView):
             zoom_start=12,
         )
         for attraction in attractions:
-            color = self.cluster_colors[attraction.cluster]
+            color = self.cluster_colors[attraction.cluster % len(self.cluster_colors)]
             folium.CircleMarker(
                 radius=8,
                 color=color,
@@ -53,6 +48,7 @@ class TfaView(TemplateView):
                 tooltip=f"{attraction.name} · cluster {attraction.cluster}",
             ).add_to(map_view)
         map_view.add_to(figure)
+        figure.render()
         return figure
 
     @staticmethod
@@ -73,6 +69,7 @@ class TfaView(TemplateView):
                 tooltip=f"{origin.country}: {origin.share_percent:.1f}% of visitors",
             ).add_to(map_view)
         map_view.add_to(figure)
+        figure.render()
         return figure
 
     def get_context_data(self, **kwargs):
@@ -97,9 +94,7 @@ class TfaView(TemplateView):
                 "selected_season": result.season,
                 "selected_place": result.place,
                 "PlacesList": options.places,
-                "SeasonList": {
-                    season.code: season.label for season in options.seasons
-                },
+                "SeasonList": options.seasons,
                 "flow_result": result,
             }
         )

@@ -66,6 +66,9 @@ class TouristFlowViewTests(TestCase):
         self.assertEqual(len(result.attractions), 20)
         self.assertEqual(len(result.origins), 23)
         self.assertEqual(result.diagnostics[0].subject, "English Garden")
+        self.assertContains(response, "COVID period")
+        self.assertNotContains(response, "Post-COVID")
+        self.assertContains(response, "leaflet")
 
     def test_unknown_flow_place_is_rejected(self):
         response = self.client.get(
