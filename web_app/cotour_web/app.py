@@ -224,6 +224,16 @@ def create_app(
             context={"title": "Home"},
         )
 
+    @application.get(
+        "/contact/", response_class=HTMLResponse, include_in_schema=False
+    )
+    def contact(request: Request):
+        return templates.TemplateResponse(
+            request=request,
+            name="contact.html",
+            context={"title": "Contact"},
+        )
+
     def render_recommendations(
         request: Request,
         form: RecommendationRequest,

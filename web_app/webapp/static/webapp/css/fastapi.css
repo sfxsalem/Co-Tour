@@ -47,4 +47,11 @@ fieldset { border: 1px solid var(--line); display: flex; gap: 1rem; margin: 0; }
 .flow-data caption { color: var(--muted); padding: .5rem 0; text-align: left; }
 .flow-data th, .flow-data td { border-bottom: 1px solid var(--line); padding: .6rem; text-align: left; white-space: nowrap; }
 .flow-data thead th { color: var(--muted); font-size: .75rem; letter-spacing: .04em; text-transform: uppercase; }
-@media (max-width: 800px) { nav { flex-wrap: wrap; gap: .75rem; } .workspace, .features, .forecast-layout, .forecast-filters, .flow-grid { grid-template-columns: 1fr; } .filter-panel { position: static; } .result-card { grid-template-columns: 2.5rem 100px 1fr; } .text-link { display: block; margin: 1rem 0 0; } }
+.contact-heading { max-width: 900px; }
+.contact-grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.contact-card { background: var(--panel); border: 1px solid var(--line); min-height: 240px; padding: 2rem; }
+.contact-card h2 { font-size: clamp(1.5rem, 3vw, 2.4rem); margin: .5rem 0 1rem; }
+.contact-card a { overflow-wrap: anywhere; }
+.contact-note { color: var(--muted); max-width: 42rem; }
+.contact-link { margin-left: 0; }
+@media (max-width: 800px) { nav { flex-wrap: wrap; gap: .75rem; } .workspace, .features, .forecast-layout, .forecast-filters, .flow-grid, .contact-grid { grid-template-columns: 1fr; } .filter-panel { position: static; } .result-card { grid-template-columns: 2.5rem 100px 1fr; } .text-link { display: block; margin: 1rem 0 0; } .contact-link { margin-left: 0; } }

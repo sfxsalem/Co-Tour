@@ -8,9 +8,9 @@
 
 **Tech Stack:** Python 3.12, FastAPI, Pydantic, Jinja2, HTMX-ready HTML, Pandas, scikit-learn, pytest/unittest, Django 5.2 retained during migration.
 
-## Migration status after phase 3
+## Migration status after phase 4
 
-The recommendation and tourist-hotspot slices are complete. Phase 3 migrated tourist-flow analysis behind `cotour.flows.FlowService`, with shared Django/FastAPI behavior, complete artifact-catalog validation, deterministic cluster output, valid empty-season handling, explicit coordinate diagnostics, CSP-safe server-rendered SVG maps, and `GET /api/v1/tourist-flow`. Django remains the default deployment until the contact route has parity.
+The recommendation, tourist-hotspot, tourist-flow, and contact slices are complete. Phase 4 adds an honest, server-rendered contact page without the legacy dead form and switches the default container from Django/Gunicorn to FastAPI/Uvicorn. Django remains tested and available through the explicit `rollback` Compose profile.
 
 ## Global Constraints
 
