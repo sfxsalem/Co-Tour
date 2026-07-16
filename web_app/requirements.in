@@ -1,9 +1,13 @@
 Django>=5.2,<5.3
 countrygroups>=0.13,<1
+fastapi>=0.116,<1
 folium>=0.19,<1
 geopy>=2.4,<3
 gunicorn>=23,<24
+httpx2>=2,<3
 numpy>=2.0,<3
 pandas>=2.2,<3
+python-multipart>=0.0.20,<1
 scikit-learn>=1.6,<2
+uvicorn[standard]>=0.35,<1
 whitenoise>=6.8,<7
