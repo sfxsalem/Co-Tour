@@ -8,6 +8,10 @@
 
 **Tech Stack:** Python 3.12, FastAPI, Pydantic, Jinja2, HTMX-ready HTML, Pandas, scikit-learn, pytest/unittest, Django 5.2 retained during migration.
 
+## Migration status after phase 2
+
+The recommendation slice described below is complete. The next vertical slice also migrated the tourist hotspot forecast behind `cotour.forecasts.ForecastService`, with shared Django/FastAPI behavior, repository-relative artifacts, validated month inputs, CSP-safe server-rendered SVG maps, and `GET /api/v1/hotspot-forecast`. Django remains the default deployment until the flow-analysis and contact routes have parity.
+
 ## Global Constraints
 
 - Preserve the existing Django routes and security tests during the migration.
