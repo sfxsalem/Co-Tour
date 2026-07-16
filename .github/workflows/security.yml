@@ -43,6 +43,9 @@ jobs:
         working-directory: web_app
         run: python manage.py test
 
+      - name: Validate forecast artifacts
+        run: python -m unittest src/test_scaler_io.py
+
       - name: Validate production configuration
         working-directory: web_app
         env:

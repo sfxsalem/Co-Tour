@@ -3,7 +3,7 @@ import tensorflow.keras
 import numpy as np
 import pandas as pd
 
-from scaler_io import inverse_transform, load_scalers, transform
+from scaler_io import inverse_transform, load_scalers, prediction_places, transform
 
 def create_sequences(dataset, in_steps=1, out_steps=1, dropNa=True):
     """Converts time series into a data set for supervised machine learning models"""
@@ -52,8 +52,8 @@ X_data_scaled = X_data
 for i in range(X_data.shape[2]):
     X_data_scaled[:, :, i] = transform(X_data[:, :, i], scalers["xscalers"][str(i)])
 
-# Get the places that we wanna predict
-places = dataset.columns[:23]
+# Predict only places backed by a matching model and output scaler.
+places = prediction_places(dataset.columns, scalers)
 
 ret = []
 

@@ -5,6 +5,7 @@ import numpy as np
 
 
 SCALER_FILE = Path(__file__).resolve().parents[1] / "data_scaler" / "scalers.json"
+MODEL_DIRECTORY = Path(__file__).resolve().parents[1] / "ML_models"
 
 
 def _parameters(scaler):
@@ -28,6 +29,27 @@ def save_scalers(xscalers, yscaler, place):
 
 def load_scalers():
     return json.loads(SCALER_FILE.read_text(encoding="utf-8"))
+
+
+def prediction_places(dataset_columns, scalers, model_directory=MODEL_DIRECTORY):
+    """Return supported prediction places in dataset order after validating artifacts."""
+    dataset_places = set(dataset_columns)
+    scaler_places = set(scalers["yscalers"])
+    model_places = {model.stem for model in Path(model_directory).glob("*.h5")}
+
+    if scaler_places != model_places:
+        missing_scalers = sorted(model_places - scaler_places)
+        missing_models = sorted(scaler_places - model_places)
+        raise ValueError(
+            "Forecast artifacts do not match: "
+            f"missing scalers={missing_scalers}, missing models={missing_models}"
+        )
+
+    unknown_places = sorted(scaler_places - dataset_places)
+    if unknown_places:
+        raise ValueError(f"Forecast places are absent from the dataset: {unknown_places}")
+
+    return [place for place in dataset_columns if place in scaler_places]
 
 
 def transform(values, parameters):
