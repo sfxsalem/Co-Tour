@@ -10,6 +10,7 @@ main { margin: 0 auto; max-width: 1400px; padding: clamp(2rem, 6vw, 6rem) clamp(
 .hero > p:not(.eyebrow), .page-heading > p:not(.eyebrow) { color: var(--muted); font-size: 1.25rem; max-width: 650px; }
 .eyebrow { color: var(--accent); font-size: .78rem; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; }
 .button, button { background: var(--accent); border: 0; color: #101212; cursor: pointer; display: inline-block; font-weight: 800; padding: .9rem 1.2rem; text-decoration: none; }
+.text-link { color: var(--muted); display: inline-block; margin-left: 1rem; }
 .features { border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(3, 1fr); } .features article { border-right: 1px solid var(--line); padding: 2rem; } .features span, small { color: var(--accent); }
 .page-heading { border-bottom: 1px solid var(--line); margin-bottom: 2.5rem; padding-bottom: 2rem; }
 .workspace { display: grid; gap: 2rem; grid-template-columns: minmax(260px, .7fr) minmax(0, 1.5fr); }
@@ -21,4 +22,18 @@ fieldset { border: 1px solid var(--line); display: flex; gap: 1rem; margin: 0; }
 .result-card img { aspect-ratio: 4/3; object-fit: cover; width: 100%; } .result-card h2 { margin: .3rem 0; } .result-card p { color: var(--muted); }
 .rank { color: var(--accent); font-size: 1.4rem; font-weight: 900; } .error { border: 1px solid #ff6b6b; color: #ffb0b0; padding: 1rem; }
 .htmx-indicator { display: none; } .htmx-request .htmx-indicator, .htmx-request.htmx-indicator { display: inline; } footer { color: var(--muted); padding: 2rem 5vw; }
-@media (max-width: 800px) { nav { gap: .75rem; } .workspace, .features { grid-template-columns: 1fr; } .filter-panel { position: static; } .result-card { grid-template-columns: 2.5rem 100px 1fr; } }
+.forecast-filters { align-items: end; background: var(--panel); border: 1px solid var(--line); display: grid; gap: 1rem; grid-template-columns: 1fr 1fr auto; margin-bottom: 2rem; padding: 1.25rem; }
+.forecast-layout { display: grid; gap: 1.5rem; grid-template-columns: minmax(0, 2fr) minmax(240px, .7fr); }
+.map-card, .ranking-card { background: var(--panel); border: 1px solid var(--line); padding: 1.25rem; }
+.map-card svg { display: block; height: auto; width: 100%; }
+.map-field { fill: #111515; stroke: #343737; }
+.map-axis { fill: none; stroke: #252929; stroke-width: 1; }
+.map-card circle { stroke: #f5f3ed; stroke-opacity: .7; stroke-width: 1.5; }
+.section-label { align-items: center; display: flex; justify-content: space-between; margin-bottom: 1rem; }
+.section-label span, .map-note { color: var(--muted); }
+.ranking-card ol { margin: 1.5rem 0 0; padding-left: 2rem; }
+.ranking-card li { border-top: 1px solid var(--line); padding: .7rem .25rem; }
+.ranking-card li::marker { color: var(--accent); font-weight: 800; }
+.historical-map { margin-top: 1.5rem; }
+.map-note { font-size: .82rem; margin-bottom: 0; }
+@media (max-width: 800px) { nav { flex-wrap: wrap; gap: .75rem; } .workspace, .features, .forecast-layout, .forecast-filters { grid-template-columns: 1fr; } .filter-panel { position: static; } .result-card { grid-template-columns: 2.5rem 100px 1fr; } .text-link { display: block; margin: 1rem 0 0; } }

@@ -103,3 +103,40 @@ class FastAPIApplicationTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 422)
+
+    def test_hotspot_forecast_page_is_server_rendered(self):
+        response = self.client.get("/tourist_hotspot_forecast/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Tourist Hotspot Forecast", response.text)
+        self.assertIn('<svg role="img"', response.text)
+        self.assertEqual(response.text.count('data-testid="forecast-hotspot"'), 22)
+        self.assertIn("Tierpark Hellabrunn", response.text)
+
+    def test_hotspot_forecast_api_returns_typed_results(self):
+        response = self.client.get("/api/v1/hotspot-forecast")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["predicted_month"], "2020-07-01")
+        self.assertEqual(payload["historical_month"], "2020-04-01")
+        self.assertEqual(len(payload["predicted"]), 22)
+        self.assertEqual(len(payload["historical"]), 22)
+        self.assertEqual(payload["top_attractions"][0], "Tierpark Hellabrunn")
+        self.assertEqual(payload["predicted"][0]["color"], "darkred")
+
+    def test_hotspot_routes_reject_unavailable_months(self):
+        for path in (
+            "/tourist_hotspot_forecast/?predicted_month=2020-06-01",
+            "/api/v1/hotspot-forecast?historical_month=2020-07-01",
+        ):
+            with self.subTest(path=path):
+                response = self.client.get(path)
+                self.assertEqual(response.status_code, 422)
+
+    def test_hotspot_page_keeps_strict_script_policy(self):
+        response = self.client.get("/tourist_hotspot_forecast/")
+
+        policy = response.headers["content-security-policy"]
+        self.assertIn("script-src 'self' https://unpkg.com", policy)
+        self.assertNotIn("'unsafe-inline'", policy)

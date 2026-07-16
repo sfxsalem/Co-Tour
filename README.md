@@ -55,7 +55,7 @@ Configuration
 Local development
 -----------------
 
-The recommendation system is being migrated incrementally from Django to FastAPI. Both web adapters currently call the same framework-independent service in `web_app/cotour/`; recommendation requests no longer perform live geocoding or fit a new clustering model on every request.
+The application is being migrated incrementally from Django to FastAPI. Both web adapters now call framework-independent recommendation and hotspot-forecast services in `web_app/cotour/`. Requests use validated, repository-relative local artifacts; recommendation requests no longer perform live geocoding or fit a clustering model on every request.
 
 Create a virtual environment and install the reproducible web dependency lock:
 
@@ -72,20 +72,32 @@ cd web_app
 LOKY_MAX_CPU_COUNT=2 uvicorn cotour_web.app:app --reload
 ```
 
-The migrated application is available at [http://localhost:8000](http://localhost:8000), its OpenAPI documentation at [http://localhost:8000/docs](http://localhost:8000/docs), and health check at [http://localhost:8000/health](http://localhost:8000/health). The home page and tourism recommendation flow are currently migrated.
+The migrated application is available at [http://localhost:8000](http://localhost:8000), its OpenAPI documentation at [http://localhost:8000/docs](http://localhost:8000/docs), and health check at [http://localhost:8000/health](http://localhost:8000/health). These routes now have FastAPI parity:
+
+- `/` — server-rendered home page
+- `/tourism_recommendation_system/` and `POST /api/v1/recommendations`
+- `/tourist_hotspot_forecast/` and `GET /api/v1/hotspot-forecast`
+
+The hotspot API accepts optional ISO month query parameters, for example:
+
+```text
+/api/v1/hotspot-forecast?predicted_month=2020-08-01&historical_month=2019-08-01
+```
+
+Only months exposed by the local forecast artifacts are accepted. Invalid or unavailable values return HTTP 422.
 
 Run the test suites from the repository root:
 
 ```bash
 LOKY_MAX_CPU_COUNT=2 PYTHONPATH=web_app .venv/bin/python -m unittest discover -s web_app/tests -v
-DJANGO_SECRET_KEY=test-only DJANGO_DEBUG=1 LOKY_MAX_CPU_COUNT=2 .venv/bin/python web_app/manage.py test webapp
+DJANGO_SECRET_KEY=test-only-secret-that-is-at-least-fifty-characters-long DJANGO_DEBUG=1 DJANGO_SECURE_SSL_REDIRECT=0 LOKY_MAX_CPU_COUNT=2 .venv/bin/python web_app/manage.py test webapp
 ```
 
-Temporary Django rollback and not-yet-migrated analytics pages:
+Temporary Django rollback for all routes, including the not-yet-migrated flow-analysis and contact pages:
 
 ```bash
 cd web_app
-DJANGO_SECRET_KEY=local-only DJANGO_DEBUG=1 ../.venv/bin/python manage.py runserver
+DJANGO_SECRET_KEY=local-only-secret-that-is-at-least-fifty-characters-long DJANGO_DEBUG=1 ../.venv/bin/python manage.py runserver
 ```
 
 Container deployment
@@ -112,7 +124,7 @@ $ pip install -r requirements.txt
 
 This command can be used to create an environment and install all the required packages.
 
-The existing Django container remains the default until the flow-analysis and hotspot-forecast pages reach FastAPI parity:
+The existing Django container remains the default until the flow-analysis and contact pages reach FastAPI parity:
 
 ```bash
 cp .env.example .env

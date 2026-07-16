@@ -9,7 +9,13 @@ from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
 from django.http import Http404
 from django.views.generic import TemplateView
-from sklearn.preprocessing import minmax_scale
+
+from cotour.forecasts import (
+    ForecastInputError,
+    ForecastQuery,
+    ForecastService,
+    Hotspot,
+)
 
 from cotour.recommendations import (
     RecommendationInputError,
@@ -45,117 +51,10 @@ def resolve_season_dataset(place, season):
     return dataset
 
 
-def load_state_geo_coords():
-    geo_coords = pd.read_csv('./data/geocoordinates/State_geoattractions.csv', low_memory=False)
-    geo_coords = geo_coords.set_index('place')
-
-    return geo_coords
-
-
 def load_tripadvisor_geo_coords():
     geo_coords = pd.read_csv('./data/geocoordinates/TripAdvisor_geoattractions.csv', low_memory=False)
     geo_coords = geo_coords.set_index('place')
     return geo_coords
-
-
-def load_data(type):
-    if type == 'pred':
-        dataset = pd.read_csv('./data/Forecast Data/dataset_predicted.csv')
-
-        dataset['DATE'] = [datetime.strptime(date, '%Y-%m-%d') for date in dataset['DATE']]
-        dataset = dataset.set_index('DATE')
-    elif type == 'hist':
-        dataset = pd.read_csv('./data/Forecast Data/dataset.csv')
-
-        dataset['DATE'] = [datetime.strptime(date, '%Y-%m-%d') for date in dataset['DATE']]
-        dataset = dataset.set_index('DATE')
-    return dataset
-
-
-def get_geo_data_historical(dataset, date):
-    colors_list = [
-        'darkblue',
-        'blue',
-        'lightblue',
-        'cadetblue',
-        'green',
-        'lightgreen',
-        'orange',
-        'lightred',
-        'red',
-        'darkred',
-        'darkblue'
-    ]
-    geo_coords = load_state_geo_coords()
-
-    geo = pd.DataFrame(index=dataset.columns[:-1])
-    geo['Longitude'] = ''
-    geo['Latitude'] = ''
-    geo['Weights'] = ''
-    for place in geo.index:
-        try:
-            geo['Latitude'][place] = geo_coords['latitude'][place]
-            geo['Longitude'][place] = geo_coords['longitude'][place]
-        except:
-            geo['Latitude'][place] = ''
-            geo['Longitude'][place] = ''
-        geo['Weights'] = dataset.loc[date]
-    geo = geo[geo['Longitude'].astype(bool)]
-
-    geo['Weights'] = geo['Weights'] * 100
-    geo.sort_values(by='Weights', ascending=False)
-    geo['Place'] = geo.index
-    geo["Weights"] = minmax_scale(geo["Weights"])
-
-    temp_colors_list = list()
-    for i in range(len(geo)):
-        temp_colors_list.append(colors_list[int(geo["Weights"][i] * 10)])
-    geo['Color'] = temp_colors_list
-    return geo
-
-
-def get_geo_data_predicted(dataset, date):
-    colors_list = [
-        'darkblue',
-        'blue',
-        'lightblue',
-        'cadetblue',
-        'green',
-        'lightgreen',
-        'orange',
-        'lightred',
-        'red',
-        'darkred',
-        'darkblue'
-    ]
-    geo_coords = load_state_geo_coords()
-
-    geo = pd.DataFrame(index=dataset.columns[:-1])
-    geo['Longitude'] = ''
-    geo['Latitude'] = ''
-    geo['Weights'] = ''
-    for place in geo.index:
-        try:
-            geo['Latitude'][place] = geo_coords['latitude'][place]
-            geo['Longitude'][place] = geo_coords['longitude'][place]
-        except:
-            geo['Latitude'][place] = ''
-            geo['Longitude'][place] = ''
-        geo['Weights'] = dataset.loc[date]
-    geo = geo[geo['Longitude'].astype(bool)]
-
-    geo['Weights'] = geo['Weights'] * 100
-
-    geo = geo.sort_values(by='Weights', ascending=False)
-    geo['Place'] = geo.index
-    geo["Weights"] = minmax_scale(geo["Weights"])
-
-    temp_colors_list = list()
-    for i in range(len(geo)):
-        temp_colors_list.append(colors_list[int(geo["Weights"][i] * 10)])
-    geo['Color'] = temp_colors_list
-    geo = geo.sort_values(by='Weights', ascending=False)
-    return geo
 
 
 def get_flow_data():
@@ -257,89 +156,56 @@ class TfaView(TemplateView):
 
 class ThfView(TemplateView):
     template_name = 'webapp/tourist_hotspot_forecast.html'
+    service = ForecastService(settings.BASE_DIR / "data")
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-    def get_date_forecast(self):
-        tfh_month_select = self.request.GET.get('tfh_month_select', 'Jul 2020')
-        tfh_month_select = datetime.strptime(tfh_month_select, '%b %Y')
-        tfh_month_select = tfh_month_select.strftime("%Y-%m-%d")
-        return tfh_month_select
-
-    def get_date_hist(self):
-        month_picker = self.request.GET.get('month_picker', 'Apr 2020')
-        month_picker = datetime.strptime(month_picker, '%b %Y')
-        month_picker = month_picker.strftime("%Y-%m-%d")
-        return month_picker
-
-    def top_ten_place(self, geo, **kwargs):
-        top_10 = geo.head(10)
-        Row_list = []
-        # Iterate over each row
-        for index, rows in top_10.iterrows():
-            my_list = index
-            Row_list.append(my_list)
-        return Row_list
-
-    def get_map(self, geo, **kwargs):
+    @staticmethod
+    def get_map(hotspots: tuple[Hotspot, ...]):
         figure = folium.Figure()
-        lat = 48.137154
-        lon = 11.576124
-        m = folium.Map(
-            location=[lat, lon],
+        map_view = folium.Map(
+            location=[48.137154, 11.576124],
             tiles='cartodbpositron',
             zoom_start=12,
         )
-        m.add_to(figure)
-        geo.apply(lambda row: folium.Marker(icon=folium.Icon(color=row['Color']),
-                                            location=[row["Latitude"], row["Longitude"]],
-                                            tooltip='<div class="card">' + str(
-                                                row['Place']) + str(row["Weights"]) + '</div>').add_to(m), axis=1)
-        figure.render()
-        return figure
-
-    def get_map_hist(self, geo, **kwargs):
-        figure = folium.Figure()
-        lat = 48.137154
-        lon = 11.576124
-        m = folium.Map(
-            location=[lat, lon],
-            tiles='cartodbpositron',
-            zoom_start=12,
-        )
-        m.add_to(figure)
-        geo.apply(lambda row: folium.Marker(icon=folium.Icon(color=row['Color']),
-                                            location=[row["Latitude"], row["Longitude"]], tooltip=str(
-                row['Place']) + str(row["Weights"])).add_to(m), axis=1)
-        figure.render()
+        for hotspot in hotspots:
+            folium.Marker(
+                icon=folium.Icon(color=hotspot.color),
+                location=[hotspot.latitude, hotspot.longitude],
+                tooltip=f"{hotspot.name}: {hotspot.weight:.1%}",
+            ).add_to(map_view)
+        map_view.add_to(figure)
         return figure
 
     def get_context_data(self, **kwargs):
-        context = super(ThfView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
+        try:
+            query = ForecastQuery(
+                predicted_month=datetime.strptime(
+                    self.request.GET.get("tfh_month_select", "Jul 2020"), "%b %Y"
+                ).date(),
+                historical_month=datetime.strptime(
+                    self.request.GET.get("month_picker", "Apr 2020"), "%b %Y"
+                ).date(),
+            )
+            result = self.service.forecast(query)
+        except (ForecastInputError, ValueError) as error:
+            raise SuspiciousOperation(str(error)) from error
 
-        dataset_pred = load_data('pred')
-        PredDateList = dataset_pred.index.strftime("%b %Y")
-        date_pred = self.get_date_forecast()
-        geo = get_geo_data_predicted(dataset_pred, date_pred)
-        figure = self.get_map(geo)
-        top_10 = self.top_ten_place(geo)
-
-        dataset_hist = load_data('hist')
-        HistDateList = dataset_hist.index.strftime("%b %Y")
-        date_hist = self.get_date_hist()
-        geo = get_geo_data_historical(dataset_hist, date_hist)
-        figure2 = self.get_map_hist(geo)
-
-        context['map'] = figure
-        context['map2'] = figure2
-        context['PredDateList'] = PredDateList
-        context['HistDateList'] = HistDateList
-        date_pred = datetime.strptime(date_pred, '%Y-%m-%d')
-        date_hist = datetime.strptime(date_hist, '%Y-%m-%d')
-        context['selected_pred_date'] = date_pred.strftime("%b %Y")
-        context['selected_hist_date'] = date_hist.strftime("%b %Y")
-        context['top_10'] = top_10
+        options = self.service.options()
+        context.update(
+            {
+                "map": self.get_map(result.predicted),
+                "map2": self.get_map(result.historical),
+                "PredDateList": tuple(
+                    month.strftime("%b %Y") for month in options.predicted_months
+                ),
+                "HistDateList": tuple(
+                    month.strftime("%b %Y") for month in options.historical_months
+                ),
+                "selected_pred_date": result.predicted_month.strftime("%b %Y"),
+                "selected_hist_date": result.historical_month.strftime("%b %Y"),
+                "top_10": result.top_attractions,
+            }
+        )
         return context
 
 

@@ -54,3 +54,21 @@ class RecommendationViewTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 400)
+
+
+class HotspotForecastViewTests(TestCase):
+    def test_default_page_uses_shared_forecast_service(self):
+        response = self.client.get(reverse("thf"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["selected_pred_date"], "Jul 2020")
+        self.assertEqual(response.context["selected_hist_date"], "Apr 2020")
+        self.assertEqual(len(response.context["top_10"]), 10)
+        self.assertEqual(response.context["top_10"][0], "Tierpark Hellabrunn")
+
+    def test_invalid_forecast_month_is_rejected(self):
+        response = self.client.get(
+            reverse("thf"), {"tfh_month_select": "Jun 2020"}
+        )
+
+        self.assertEqual(response.status_code, 400)
