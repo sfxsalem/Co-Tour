@@ -19,11 +19,17 @@ class FastAPIApplicationTests(TestCase):
         self.assertEqual(response.headers["x-frame-options"], "DENY")
         self.assertIn("default-src 'self'", response.headers["content-security-policy"])
 
+    def test_rejects_untrusted_host(self):
+        response = self.client.get("/health", headers={"Host": "attacker.example"})
+
+        self.assertEqual(response.status_code, 400)
+
     def test_home_page_is_server_rendered(self):
         response = self.client.get("/")
 
         self.assertEqual(response.status_code, 200)
         self.assertIn("CO-TOUR", response.text)
+        self.assertIn("integrity=\"sha384-", response.text)
 
     def test_recommendation_page_is_server_rendered(self):
         response = self.client.get("/tourism_recommendation_system/")
@@ -66,3 +72,34 @@ class FastAPIApplicationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertNotIn("<!doctype html>", response.text.lower())
         self.assertEqual(response.text.count('data-testid="recommendation"'), 3)
+
+    def test_standard_form_returns_complete_page(self):
+        response = self.client.post(
+            "/tourism_recommendation_system/",
+            data={
+                "country": "Tunisia",
+                "german_city": "Munich",
+                "visit_type": "solo",
+                "accommodation": "Maxvorstadt",
+                "visit_date": "2020-08-10",
+                "preference": "outdoors",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("<!doctype html>", response.text.lower())
+
+    def test_malformed_form_returns_validation_error(self):
+        response = self.client.post(
+            "/tourism_recommendation_system/",
+            data={
+                "country": "",
+                "german_city": "Munich",
+                "visit_type": "solo",
+                "accommodation": "Maxvorstadt",
+                "visit_date": "2020-08-10",
+                "preference": "outdoors",
+            },
+        )
+
+        self.assertEqual(response.status_code, 422)

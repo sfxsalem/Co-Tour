@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from datetime import date
 from pathlib import Path
 from typing import Annotated
@@ -11,6 +12,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, ConfigDict, Field
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from cotour.recommendations import (
     Recommendation,
@@ -72,6 +74,14 @@ def create_app(service: RecommendationService | None = None) -> FastAPI:
     application.state.recommendation_service = service or RecommendationService(
         WEB_APP_DIRECTORY / "data"
     )
+    allowed_hosts = [
+        host.strip()
+        for host in os.environ.get(
+            "FASTAPI_ALLOWED_HOSTS", "localhost,127.0.0.1,[::1],testserver"
+        ).split(",")
+        if host.strip()
+    ]
+    application.add_middleware(TrustedHostMiddleware, allowed_hosts=allowed_hosts)
     application.mount(
         "/static",
         StaticFiles(directory=WEB_APP_DIRECTORY / "webapp" / "static"),
@@ -149,21 +159,8 @@ def create_app(service: RecommendationService | None = None) -> FastAPI:
     )
     def submit_recommendation_form(
         request: Request,
-        country: Annotated[str, Form()],
-        german_city: Annotated[str, Form()],
-        visit_type: Annotated[str, Form()],
-        accommodation: Annotated[str, Form()],
-        visit_date: Annotated[date, Form()],
-        preference: Annotated[str, Form()],
+        form: Annotated[RecommendationRequest, Form()],
     ):
-        form = RecommendationRequest(
-            country=country,
-            german_city=german_city,
-            visit_type=visit_type,
-            accommodation=accommodation,
-            visit_date=visit_date,
-            preference=preference,
-        )
         return render_recommendations(
             request, form, fragment=request.headers.get("HX-Request") == "true"
         )

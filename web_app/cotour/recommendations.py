@@ -21,6 +21,9 @@ ORIGIN_EU = "provenance_EU apart from GER"
 # The source artifact contains this historical spelling. Keep it at the boundary.
 ORIGIN_OUTSIDE_EU = "provenance_Outisde EU"
 PREFERENCES = ("indoors", "outdoors")
+PLACE_ALIASES = {"Allianz Arena": "Olympiastadion"}
+# Accommodation covers all Munich districts, not only districts that currently
+# contain an attraction in the recommendation artifact.
 MUNICH_DISTRICTS = (
     "Altstadt-Lehel",
     "Ludwigsvorstadt-Isarvorstadt",
@@ -164,7 +167,7 @@ class RecommendationService:
         for value, allowed, label in checks:
             if value not in allowed:
                 raise RecommendationInputError(f"Unsupported {label}: {value}")
-        if query.country == "Germany" and query.german_city not in options.german_cities:
+        if query.german_city not in options.german_cities:
             raise RecommendationInputError(
                 f"Unsupported German city: {query.german_city}"
             )
@@ -196,7 +199,11 @@ class RecommendationService:
         place_types = self._recommendation_data.set_index("place")["type_door"]
         matching_type = place_types.reindex(scores.index).eq(query.preference)
         scores = scores * np.where(matching_type.fillna(False), 2.0, 1.0)
-        return pd.Series(minmax_scale(scores), index=scores.index, name="cluster_score")
+        normalized = pd.Series(
+            minmax_scale(scores), index=scores.index, name="cluster_score"
+        )
+        normalized = normalized.rename(index=PLACE_ALIASES)
+        return normalized.groupby(level=0).max().rename("cluster_score")
 
     def _artifact_scores(self, query: RecommendationQuery) -> pd.Series:
         data = self._recommendation_data.copy().set_index("place")
@@ -220,13 +227,16 @@ class RecommendationService:
             minmax_scale(raw_scores), index=data.index, name="artifact_score"
         )
 
-    def recommend(self, query: RecommendationQuery) -> tuple[Recommendation, ...]:
-        self._validate(query)
+    def _combined_scores(self, query: RecommendationQuery) -> pd.DataFrame:
         scores = pd.concat(
             [self._cluster_scores(query), self._artifact_scores(query)], axis=1
         )
         scores["score"] = scores.mean(axis=1, skipna=True)
-        ranked = scores.sort_values("score", ascending=False).head(3)
+        return scores.sort_values("score", ascending=False)
+
+    def recommend(self, query: RecommendationQuery) -> tuple[Recommendation, ...]:
+        self._validate(query)
+        ranked = self._combined_scores(query).head(3)
 
         results = []
         for rank, (name, row) in enumerate(ranked.iterrows(), start=1):
