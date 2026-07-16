@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Data-driven tourism planning for Munich">
+    <title>CO-TOUR · {{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/webapp/css/fastapi.css') }}">
+    <script defer src="https://unpkg.com/htmx.org@2.0.8/dist/htmx.min.js"
+            integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<header class="site-nav">
+    <a class="brand" href="/">CO-TOUR</a>
+    <nav aria-label="Primary navigation">
+        <a href="/">Home</a>
+        <a href="/tourism_recommendation_system/">Recommendations</a>
+        <a href="/docs">API</a>
+    </nav>
+</header>
+<main>{% block content %}{% endblock %}</main>
+<footer>Built from local, reproducible tourism artifacts.</footer>
+</body>
+</html>

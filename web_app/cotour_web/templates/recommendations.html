@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-heading">
+    <p class="eyebrow">Personalized shortlist</p>
+    <h1>Recommendation System</h1>
+    <p>Adjust the trip profile and get three ranked attractions from the local model.</p>
+</section>
+<section class="workspace">
+    <form class="filter-panel" method="post" action="/tourism_recommendation_system/"
+          hx-post="/tourism_recommendation_system/" hx-target="#recommendation-results"
+          hx-swap="outerHTML" hx-indicator="#loading">
+        <label>Country
+            <select name="country">
+                {% for country in options.countries %}<option value="{{ country }}" {% if country == form.country %}selected{% endif %}>{{ country }}</option>{% endfor %}
+            </select>
+        </label>
+        <label>German city
+            <select name="german_city">
+                {% for city in options.german_cities %}<option value="{{ city }}" {% if city == form.german_city %}selected{% endif %}>{{ city }}</option>{% endfor %}
+            </select>
+        </label>
+        <label>Travel party
+            <select name="visit_type">
+                {% for visit_type in options.visit_types %}<option value="{{ visit_type }}" {% if visit_type == form.visit_type %}selected{% endif %}>{{ visit_type|title }}</option>{% endfor %}
+            </select>
+        </label>
+        <label>Accommodation district
+            <select name="accommodation">
+                {% for district in options.districts %}<option value="{{ district }}" {% if district == form.accommodation %}selected{% endif %}>{{ district }}</option>{% endfor %}
+            </select>
+        </label>
+        <label>Arrival date<input type="date" name="visit_date" value="{{ form.visit_date.isoformat() }}" required></label>
+        <fieldset><legend>Preference</legend>
+            {% for preference in options.preferences %}
+            <label class="radio"><input type="radio" name="preference" value="{{ preference }}" {% if preference == form.preference %}checked{% endif %}>{{ preference|title }}</label>
+            {% endfor %}
+        </fieldset>
+        <button type="submit">Refresh recommendations</button>
+        <span id="loading" class="htmx-indicator" role="status">Ranking…</span>
+    </form>
+    {% include "recommendation_results.html" %}
+</section>
+{% endblock %}

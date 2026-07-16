@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+    <p class="eyebrow">Munich · data-guided travel</p>
+    <h1>Find the places that fit your trip.</h1>
+    <p>CO-TOUR combines traveler patterns, local context, and forecast artifacts into a focused shortlist.</p>
+    <a class="button" href="/tourism_recommendation_system/">Plan my visit</a>
+</section>
+<section class="features" aria-label="Platform capabilities">
+    <article><span>01</span><h2>Local-first</h2><p>No live geocoder or third-party API is needed to create recommendations.</p></article>
+    <article><span>02</span><h2>Explainable inputs</h2><p>Your origin, travel party, location, date, and indoor/outdoor preference shape the ranking.</p></article>
+    <article><span>03</span><h2>API-ready</h2><p>The same typed service powers the website and a documented JSON endpoint.</p></article>
+</section>
+{% endblock %}
