@@ -35,6 +35,10 @@ jobs:
           python -m pip install --require-hashes -r web_app/requirements.txt
           python -m pip install bandit pip-audit
 
+      - name: Build production static assets
+        working-directory: web_app
+        run: python manage.py collectstatic --noinput
+
       - name: Run Django tests
         working-directory: web_app
         run: python manage.py test
