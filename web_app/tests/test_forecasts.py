@@ -66,6 +66,8 @@ class ForecastServiceTests(TestCase):
         self.assertEqual(max(intensities), 1.0)
         self.assertEqual(min(intensities), 0.0)
         self.assertTrue(all(0.0 <= intensity <= 1.0 for intensity in intensities))
+        self.assertEqual(result.predicted[0].color, "darkred")
+        self.assertEqual(result.predicted[-1].color, "darkblue")
 
     def test_rejects_unavailable_or_non_month_start_dates(self):
         invalid_queries = (

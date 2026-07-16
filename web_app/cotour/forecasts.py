@@ -22,7 +22,7 @@ MARKER_COLORS = (
     "lightred",
     "red",
     "darkred",
-    "darkblue",
+    "darkred",
 )
 
 

@@ -123,7 +123,7 @@ class FastAPIApplicationTests(TestCase):
         self.assertEqual(len(payload["predicted"]), 22)
         self.assertEqual(len(payload["historical"]), 22)
         self.assertEqual(payload["top_attractions"][0], "Tierpark Hellabrunn")
-        self.assertEqual(payload["predicted"][0]["color"], "darkblue")
+        self.assertEqual(payload["predicted"][0]["color"], "darkred")
 
     def test_hotspot_routes_reject_unavailable_months(self):
         for path in (

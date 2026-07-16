@@ -167,7 +167,7 @@ def create_app(
 ) -> FastAPI:
     application = FastAPI(
         title="Co-Tour API",
-        summary="Data-driven tourism recommendations for Munich",
+        summary="Data-driven tourism recommendations and forecasts for Munich",
         version="1.0.0",
     )
     application.state.recommendation_service = service or RecommendationService(

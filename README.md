@@ -97,7 +97,7 @@ Temporary Django rollback for all routes, including the not-yet-migrated flow-an
 
 ```bash
 cd web_app
-DJANGO_SECRET_KEY=local-only DJANGO_DEBUG=1 ../.venv/bin/python manage.py runserver
+DJANGO_SECRET_KEY=local-only-secret-that-is-at-least-fifty-characters-long DJANGO_DEBUG=1 ../.venv/bin/python manage.py runserver
 ```
 
 Container deployment
