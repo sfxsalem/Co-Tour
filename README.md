@@ -46,7 +46,7 @@ Configuration
 
  * If the project is directly cloned from Gitlab, the database paths are already contained in the ./data directory and implemented in the code. In case of any changes, you can find the requested database in the according sub-directory ./data/...
 
- * Copy `.env.example` to `.env`, generate a unique `DJANGO_SECRET_KEY`, and keep `.env` untracked. Production deployments must enable HTTPS redirect, secure cookies, and HSTS behind a TLS-terminating reverse proxy.
+ * Copy `.env.example` to `.env` and keep `.env` untracked. Generate a unique `DJANGO_SECRET_KEY` before using the Django rollback service. Production deployments must terminate TLS at a reverse proxy and configure the public host through `FASTAPI_ALLOWED_HOSTS`.
 
  * All the required packages and modules that don’t come as part of the python standard library are to be found in the requirements.txt file.
 
@@ -55,7 +55,7 @@ Configuration
 Local development
 -----------------
 
-The application is being migrated incrementally from Django to FastAPI. Both web adapters now call framework-independent recommendation, hotspot-forecast, and tourist-flow services in `web_app/cotour/`. Requests use validated, repository-relative local artifacts; recommendation requests no longer perform live geocoding or fit a clustering model on every request.
+FastAPI is the default web adapter. Django remains as a tested rollback path, and both adapters call framework-independent recommendation, hotspot-forecast, and tourist-flow services in `web_app/cotour/`. Requests use validated, repository-relative local artifacts; recommendation requests no longer perform live geocoding or fit a clustering model on every request.
 
 Create a virtual environment and install the reproducible web dependency lock:
 
@@ -65,19 +65,20 @@ source .venv/bin/activate
 pip install --require-hashes -r web_app/requirements.txt
 ```
 
-Run the migrated FastAPI slice:
+Run FastAPI locally:
 
 ```bash
 cd web_app
 LOKY_MAX_CPU_COUNT=2 uvicorn cotour_web.app:app --reload
 ```
 
-The migrated application is available at [http://localhost:8000](http://localhost:8000), its OpenAPI documentation at [http://localhost:8000/docs](http://localhost:8000/docs), and health check at [http://localhost:8000/health](http://localhost:8000/health). These routes now have FastAPI parity:
+The application is available at [http://localhost:8000](http://localhost:8000), its OpenAPI documentation at [http://localhost:8000/docs](http://localhost:8000/docs), and health check at [http://localhost:8000/health](http://localhost:8000/health). Every public route now has FastAPI parity:
 
 - `/` — server-rendered home page
 - `/tourism_recommendation_system/` and `POST /api/v1/recommendations`
 - `/tourist_hotspot_forecast/` and `GET /api/v1/hotspot-forecast`
 - `/tourist_flow_analysis/` and `GET /api/v1/tourist-flow`
+- `/contact/` — project contact information; the site does not collect messages
 
 The hotspot API accepts optional ISO month query parameters, for example:
 
@@ -102,7 +103,7 @@ LOKY_MAX_CPU_COUNT=2 PYTHONPATH=web_app .venv/bin/python -m unittest discover -s
 DJANGO_SECRET_KEY=test-only-secret-that-is-at-least-fifty-characters-long DJANGO_DEBUG=1 DJANGO_SECURE_SSL_REDIRECT=0 LOKY_MAX_CPU_COUNT=2 .venv/bin/python web_app/manage.py test webapp
 ```
 
-Temporary Django rollback for all routes, including the not-yet-migrated contact page:
+Django rollback for all legacy routes:
 
 ```bash
 cd web_app
@@ -112,43 +113,22 @@ DJANGO_SECRET_KEY=local-only-secret-that-is-at-least-fifty-characters-long DJANG
 Container deployment
 --------------------
 
-After installing the prerequisites you should set up a Python virtual environment using the command window:
-```
-pip install virtualenv
-```
-```
-virtualenv venv
-
-```
-```
-source venv/bin/activate venv
-
-```
-
-You can install the required packages and modules that don’t come as part of the python standard library using the command window:
-
-```
-$ pip install -r requirements.txt
-```
-
-This command can be used to create an environment and install all the required packages.
-
-The existing Django container remains the default until the contact page reaches FastAPI parity:
+FastAPI is the default container service:
 
 ```bash
 cp .env.example .env
 docker compose up --build -d web
 ```
 
-It is bound to the local loopback interface at [http://localhost:8000](http://localhost:8000). Gunicorn serves Django; the development server is not used.
+It is bound to the local loopback interface at [http://localhost:8000](http://localhost:8000); the development server is not used.
 
-Run the opt-in FastAPI migration container in parallel at [http://localhost:8001](http://localhost:8001):
+That service runs Uvicorn as the non-root container user. To exercise the Django rollback service in parallel at [http://localhost:8001](http://localhost:8001), first set a unique `DJANGO_SECRET_KEY` in `.env`, then run:
 
 ```bash
-docker compose --profile migration up --build -d api
+docker compose --profile rollback up --build -d django
 ```
 
-Do not switch the default service to FastAPI until every public route has parity tests. Never reuse a committed or shared Django secret.
+Never reuse a committed or shared Django secret. The rollback profile fails closed when its secret is absent.
 
 
 Additional Features

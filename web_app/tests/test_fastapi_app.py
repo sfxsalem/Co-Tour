@@ -31,6 +31,19 @@ class FastAPIApplicationTests(TestCase):
         self.assertIn("CO-TOUR", response.text)
         self.assertIn("integrity=\"sha384-", response.text)
 
+    def test_contact_page_is_server_rendered_without_a_dead_form(self):
+        response = self.client.get("/contact/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Contact CO-TOUR", response.text)
+        self.assertIn("mailto:ami.group16@tum.de", response.text)
+        self.assertNotIn("<form", response.text.lower())
+
+    def test_primary_navigation_links_to_contact_page(self):
+        response = self.client.get("/")
+
+        self.assertIn('href="/contact/"', response.text)
+
     def test_recommendation_page_is_server_rendered(self):
         response = self.client.get("/tourism_recommendation_system/")
 
