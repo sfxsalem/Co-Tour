@@ -21,6 +21,33 @@ ORIGIN_EU = "provenance_EU apart from GER"
 # The source artifact contains this historical spelling. Keep it at the boundary.
 ORIGIN_OUTSIDE_EU = "provenance_Outisde EU"
 PREFERENCES = ("indoors", "outdoors")
+MUNICH_DISTRICTS = (
+    "Altstadt-Lehel",
+    "Ludwigsvorstadt-Isarvorstadt",
+    "Maxvorstadt",
+    "Schwabing-West",
+    "Au-Haidhausen",
+    "Sendling",
+    "Sendling-Westpark",
+    "Schwanthalerhöhe",
+    "Neuhausen-Nymphenburg",
+    "Muenchen-Moosach",
+    "Milbertshofen-Am Hart",
+    "Schwabing-Freimann",
+    "Bogenhausen",
+    "Berg am Laim",
+    "Trudering-Riem",
+    "Ramersdorf-Perlach",
+    "Obergiesing",
+    "Untergiesing-Harlaching",
+    "Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln",
+    "Hadern",
+    "Pasing-Obermenzing",
+    "Aubing-Lochhausen-Langwied",
+    "Allach-Untermenzing",
+    "Feldmoching-Hasenbergl",
+    "Laim",
+)
 
 
 class RecommendationInputError(ValueError):
@@ -114,9 +141,6 @@ class RecommendationService:
         return tuple(self._user_data.columns[1:])
 
     def options(self) -> RecommendationOptions:
-        districts = tuple(
-            dict.fromkeys(self._recommendation_data["city_district"].dropna().astype(str))
-        )
         visit_types = tuple(
             name.removeprefix(VISIT_COLUMN_PREFIX)
             for name in self._model_feature_names
@@ -125,7 +149,7 @@ class RecommendationService:
         return RecommendationOptions(
             countries=self._countries,
             german_cities=self._german_cities,
-            districts=districts,
+            districts=MUNICH_DISTRICTS,
             visit_types=visit_types,
         )
 

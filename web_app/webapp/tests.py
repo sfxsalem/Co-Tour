@@ -39,3 +39,18 @@ class SecurityResponseTests(TestCase):
         self.assertEqual(response["X-Content-Type-Options"], "nosniff")
         self.assertEqual(response["X-Frame-Options"], "DENY")
         self.assertIn("default-src 'self'", response["Content-Security-Policy"])
+
+
+class RecommendationViewTests(TestCase):
+    def test_recommendation_page_uses_local_service(self):
+        response = self.client.get(reverse("trs"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["RecommendationResults"]), 3)
+
+    def test_invalid_recommendation_input_is_rejected(self):
+        response = self.client.get(
+            reverse("trs"), {"trs_preferences_select": "rooftops"}
+        )
+
+        self.assertEqual(response.status_code, 400)
