@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-heading">
+    <p class="eyebrow">Munich attraction demand</p>
+    <h1>Tourist Hotspot Forecast</h1>
+    <p>Compare projected attraction popularity with the historical record. Every result comes from versioned local artifacts.</p>
+</section>
+
+<form class="forecast-filters" method="get" action="/tourist_hotspot_forecast/">
+    <label>Forecast month
+        <select name="predicted_month">
+            {% for month in options.predicted_months %}
+            <option value="{{ month.isoformat() }}" {% if month == predicted_month %}selected{% endif %}>{{ month.strftime("%b %Y") }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <label>Historical month
+        <select name="historical_month">
+            {% for month in options.historical_months %}
+            <option value="{{ month.isoformat() }}" {% if month == historical_month %}selected{% endif %}>{{ month.strftime("%b %Y") }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <button type="submit">Update comparison</button>
+</form>
+
+{% if error %}
+<p class="error" role="alert">{{ error }}</p>
+{% else %}
+<section class="forecast-layout">
+    <article class="map-card">
+        <div class="section-label"><span>Forecast</span><strong>{{ result.predicted_month.strftime("%B %Y") }}</strong></div>
+        <svg role="img" aria-labelledby="predicted-map-title" viewBox="0 0 900 520">
+            <title id="predicted-map-title">Relative locations and forecast popularity of Munich attractions</title>
+            <rect class="map-field" x="1" y="1" width="898" height="518" rx="18" />
+            <path class="map-axis" d="M50 130H850M50 260H850M50 390H850M250 50V470M450 50V470M650 50V470" />
+            {% for marker in predicted_markers %}
+            <circle data-testid="forecast-hotspot" cx="{{ '%.2f'|format(marker.x) }}" cy="{{ '%.2f'|format(marker.y) }}" r="{{ '%.2f'|format(marker.radius) }}" fill="{{ marker.fill }}">
+                <title>{{ marker.name }} — {{ '%.1f'|format(marker.weight * 100) }}%</title>
+            </circle>
+            {% endfor %}
+        </svg>
+        <p class="map-note">Marker size and color represent relative popularity. Positions preserve latitude and longitude within Munich.</p>
+    </article>
+
+    <aside class="ranking-card">
+        <p class="eyebrow">Top ten forecast</p>
+        <ol>
+            {% for attraction in result.top_attractions %}<li>{{ attraction }}</li>{% endfor %}
+        </ol>
+    </aside>
+</section>
+
+<section class="map-card historical-map">
+    <div class="section-label"><span>Historical baseline</span><strong>{{ result.historical_month.strftime("%B %Y") }}</strong></div>
+    <svg role="img" aria-labelledby="historical-map-title" viewBox="0 0 900 520">
+        <title id="historical-map-title">Relative locations and historical popularity of Munich attractions</title>
+        <rect class="map-field" x="1" y="1" width="898" height="518" rx="18" />
+        <path class="map-axis" d="M50 130H850M50 260H850M50 390H850M250 50V470M450 50V470M650 50V470" />
+        {% for marker in historical_markers %}
+        <circle cx="{{ '%.2f'|format(marker.x) }}" cy="{{ '%.2f'|format(marker.y) }}" r="{{ '%.2f'|format(marker.radius) }}" fill="{{ marker.fill }}">
+            <title>{{ marker.name }} — {{ '%.1f'|format(marker.weight * 100) }}%</title>
+        </circle>
+        {% endfor %}
+    </svg>
+</section>
+{% endif %}
+{% endblock %}
