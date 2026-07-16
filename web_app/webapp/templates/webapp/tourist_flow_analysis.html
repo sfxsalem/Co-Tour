@@ -13,6 +13,9 @@
 <div class="analysis_clustering">
     <div class="container-fluid">
         <h3 class="heading-3 font-weight-bold">Tourist Flow Analysis</h3>
+        {% for diagnostic in flow_result.diagnostics %}
+        <div class="alert alert-warning" role="status"><strong>Data note:</strong> {{ diagnostic.message }} {{ diagnostic.subject }}</div>
+        {% endfor %}
         <div class="row">
             <div class="column-map col-md-12">
                 {{map.html.render|safe}}
@@ -79,9 +82,3 @@
 </div>
 </div>
 {% endblock content %}
-
-{% block javascripts %}
-<script src="{% static 'webapp/js/tfa.js' %}"></script>
-
-
-{% endblock javascripts %}
