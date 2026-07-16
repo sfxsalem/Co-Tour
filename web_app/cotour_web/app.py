@@ -24,12 +24,14 @@ from cotour.forecasts import (
     ForecastService,
     Hotspot,
 )
+from cotour.flows import FlowService
 from cotour.recommendations import (
     Recommendation,
     RecommendationInputError,
     RecommendationQuery,
     RecommendationService,
 )
+from cotour_web.flow_routes import router as flow_router
 
 
 WEB_APP_DIRECTORY = Path(__file__).resolve().parents[1]
@@ -164,6 +166,7 @@ def _svg_markers(points: tuple[Hotspot, ...]) -> tuple[SvgMarker, ...]:
 def create_app(
     service: RecommendationService | None = None,
     forecast_service: ForecastService | None = None,
+    flow_service: FlowService | None = None,
 ) -> FastAPI:
     application = FastAPI(
         title="Co-Tour API",
@@ -176,6 +179,10 @@ def create_app(
     application.state.forecast_service = forecast_service or ForecastService(
         WEB_APP_DIRECTORY / "data"
     )
+    application.state.flow_service = flow_service or FlowService(
+        WEB_APP_DIRECTORY / "data"
+    )
+    application.include_router(flow_router)
     allowed_hosts = [
         host.strip()
         for host in os.environ.get(

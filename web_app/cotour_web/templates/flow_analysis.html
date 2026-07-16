@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-heading">
+    <p class="eyebrow">Visitor movement and origin</p>
+    <h1>Tourist Flow Analysis</h1>
+    <p>Explore stable attraction clusters across Munich and compare where visitors originated during each recorded period.</p>
+</section>
+
+<form class="forecast-filters" method="get" action="/tourist_flow_analysis/">
+    <label>Attraction
+        <select name="place">
+            {% for option in options.places %}<option value="{{ option }}" {% if option == place %}selected{% endif %}>{{ option }}</option>{% endfor %}
+        </select>
+    </label>
+    <label>Period
+        <select name="season">
+            {% for option in options.seasons %}<option value="{{ option.code }}" {% if option.code == season %}selected{% endif %}>{{ option.label }} · {{ option.group }}</option>{% endfor %}
+        </select>
+    </label>
+    <button type="submit">Update analysis</button>
+</form>
+
+{% if error %}
+<p class="error" role="alert">{{ error }}</p>
+{% else %}
+{% for diagnostic in result.diagnostics %}
+<p class="data-note" role="status"><strong>Data note:</strong> {{ diagnostic.message }} <span>{{ diagnostic.subject }}</span></p>
+{% endfor %}
+
+<section class="flow-grid">
+    <article class="map-card">
+        <div class="section-label"><span>Munich attraction clusters</span><strong>{{ result.attractions|length }} mapped</strong></div>
+        <svg role="img" aria-labelledby="cluster-map-title" viewBox="0 0 900 520">
+            <title id="cluster-map-title">Relative locations and cluster membership of Munich attractions</title>
+            <rect class="map-field" x="1" y="1" width="898" height="518" rx="18" />
+            <path class="map-axis" d="M50 130H850M50 260H850M50 390H850M250 50V470M450 50V470M650 50V470" />
+            {% for marker in cluster_markers %}
+            <circle data-testid="cluster-point" cx="{{ '%.2f'|format(marker.x) }}" cy="{{ '%.2f'|format(marker.y) }}" r="{{ marker.radius }}" fill="{{ marker.fill }}">
+                <title>{{ marker.label }} — {{ marker.detail }}</title>
+            </circle>
+            {% endfor %}
+        </svg>
+    </article>
+
+    <article class="map-card">
+        <div class="section-label"><span>Visitor origins for {{ result.place }}</span><strong>{{ result.origins|length }} countries</strong></div>
+        <svg role="img" aria-labelledby="origin-map-title" viewBox="0 0 900 520">
+            <title id="origin-map-title">Worldwide visitor origins for {{ result.place }}</title>
+            <rect class="map-field" x="1" y="1" width="898" height="518" rx="18" />
+            <path class="map-axis" d="M50 155H850M50 260H850M50 365H850M250 50V470M450 50V470M650 50V470" />
+            {% for marker in origin_markers %}
+            <circle data-testid="origin-point" cx="{{ '%.2f'|format(marker.x) }}" cy="{{ '%.2f'|format(marker.y) }}" r="{{ '%.2f'|format(marker.radius) }}" fill="{{ marker.fill }}">
+                <title>{{ marker.label }} — {{ marker.detail }}</title>
+            </circle>
+            {% endfor %}
+        </svg>
+        {% if not result.origins %}<p class="empty-state">No visitor-origin data is available for this attraction and period.</p>{% endif %}
+    </article>
+</section>
+{% endif %}
+{% endblock %}

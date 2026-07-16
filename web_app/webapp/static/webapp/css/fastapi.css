@@ -36,4 +36,8 @@ fieldset { border: 1px solid var(--line); display: flex; gap: 1rem; margin: 0; }
 .ranking-card li::marker { color: var(--accent); font-weight: 800; }
 .historical-map { margin-top: 1.5rem; }
 .map-note { font-size: .82rem; margin-bottom: 0; }
-@media (max-width: 800px) { nav { flex-wrap: wrap; gap: .75rem; } .workspace, .features, .forecast-layout, .forecast-filters { grid-template-columns: 1fr; } .filter-panel { position: static; } .result-card { grid-template-columns: 2.5rem 100px 1fr; } .text-link { display: block; margin: 1rem 0 0; } }
+.flow-grid { display: grid; gap: 1.5rem; grid-template-columns: 1fr 1fr; }
+.data-note { background: #23251d; border-left: 3px solid var(--accent); color: var(--muted); padding: .85rem 1rem; }
+.data-note span { color: var(--ink); }
+.empty-state { color: var(--muted); margin: 1rem 0 0; text-align: center; }
+@media (max-width: 800px) { nav { flex-wrap: wrap; gap: .75rem; } .workspace, .features, .forecast-layout, .forecast-filters, .flow-grid { grid-template-columns: 1fr; } .filter-panel { position: static; } .result-card { grid-template-columns: 2.5rem 100px 1fr; } .text-link { display: block; margin: 1rem 0 0; } }
