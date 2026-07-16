@@ -45,6 +45,8 @@ jobs:
 
       - name: Validate production configuration
         working-directory: web_app
+        env:
+          DJANGO_SECURE_SSL_REDIRECT: "1"
         run: python manage.py check --deploy --fail-level WARNING
 
       - name: Static security analysis
