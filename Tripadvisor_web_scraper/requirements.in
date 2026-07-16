@@ -1,0 +1,5 @@
+beautifulsoup4>=4.13,<5
+countrygroups>=0.13,<1
+pandas>=2.2,<3
+scikit-learn>=1.6,<2
+selenium>=4.30,<5

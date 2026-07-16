@@ -46,6 +46,8 @@ Configuration
 
  * If the project is directly cloned from Gitlab, the database paths are already contained in the ./data directory and implemented in the code. In case of any changes, you can find the requested database in the according sub-directory ./data/...
 
+ * Copy `.env.example` to `.env`, generate a unique `DJANGO_SECRET_KEY`, and keep `.env` untracked. Production deployments must enable HTTPS redirect, secure cookies, and HSTS behind a TLS-terminating reverse proxy.
+
  * All the required packages and modules that don’t come as part of the python standard library are to be found in the requirements.txt file.
 
 
@@ -81,7 +83,15 @@ $ cd TO ROOT
 $ docker-compose build
 $ docker-compose up -d
 ```
-The Web App should be then accessible from your web browser using the address http://localhost:8000/ which would land on the home page of Co-Tour
+The Web App is bound to the local loopback interface and should be accessible at http://localhost:8000/. Gunicorn serves the application; Django's development server is not used.
+
+Before the first run, create the local environment file and replace the placeholder secret:
+
+```
+$ cp .env.example .env
+```
+
+Never reuse a committed or shared Django secret.
 
 
 Additional Features

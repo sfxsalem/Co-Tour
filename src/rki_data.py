@@ -8,7 +8,7 @@ def download_data(path='../data/covid_19_data/rki/RKI_COVID19.json'):
     url = 'https://opendata.arcgis.com/datasets/dd4580c810204019a7b8eb3e0b329dd6_0.geojson'
     # Data download
     param = dict()
-    resp = requests.get(url=url, params=param)
+    resp = requests.get(url=url, params=param, timeout=30)
     data = resp.json()
     # Save data as a .json file
     with open(path, 'w') as outfile:

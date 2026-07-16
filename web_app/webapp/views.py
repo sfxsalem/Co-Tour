@@ -1,14 +1,45 @@
 import math
+import re
 from datetime import datetime
 import numpy as np
 import folium
 import pandas as pd
 
+from django.conf import settings
+from django.core.exceptions import SuspiciousOperation
+from django.http import Http404
 from django.views.generic import TemplateView
 from geopy.geocoders import Nominatim
 from countrygroups import EUROPEAN_UNION
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import minmax_scale
+
+
+SEASON_DATA_DIRECTORY = (
+    settings.BASE_DIR / "data" / "Tripadvisor_datasets" / "Seasons"
+).resolve()
+ALLOWED_SEASONS = frozenset(
+    {
+        "summer_pre_covid",
+        "winter_pre_covid",
+        "summer_covid",
+        "winter_covid",
+    }
+)
+SAFE_PLACE_NAME = re.compile(r"^[\w .'-]+$", re.UNICODE)
+
+
+def resolve_season_dataset(place, season):
+    """Return an approved season dataset without allowing path traversal."""
+    if season not in ALLOWED_SEASONS or not SAFE_PLACE_NAME.fullmatch(place):
+        raise SuspiciousOperation("Invalid attraction or season")
+
+    dataset = (SEASON_DATA_DIRECTORY / f"{place}_{season}.csv").resolve()
+    if dataset.parent != SEASON_DATA_DIRECTORY:
+        raise SuspiciousOperation("Dataset path escaped the approved directory")
+    if not dataset.is_file():
+        raise Http404("Dataset not found")
+    return dataset
 
 
 def load_geo_coords():
@@ -168,7 +199,6 @@ def merge_dfs(df1, df2):
     for index1, row1 in df1.iterrows():
         for index2, row2 in df2.iterrows():
             if row1.place_name == row2.place_name:
-                print(df1.place_name[index1], df2.place_name[index2])
                 row2.place_score = (row1.place_score + row2.place_score) / 2
                 df1 = df1.drop([index1])
             if (row1.place_name == 'Allianz Arena') & (row2.place_name == 'Olympiastadion'):
@@ -256,12 +286,10 @@ class TfaView(TemplateView):
 
     def get_season(self):
         tfa_season_select = self.request.GET.get('tfa_season_select', 'summer_pre_covid')
-        print(tfa_season_select)
         return tfa_season_select
 
     def get_place(self):
         tfa_place_select = self.request.GET.get('tfa_place_select', 'Olympiapark')
-        print(tfa_place_select)
         return tfa_place_select
 
     def get_map(self, df, **geo):
@@ -307,23 +335,24 @@ class TfaView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(TfaView, self).get_context_data(**kwargs)
+        season = self.get_season()
+        place = self.get_place()
+        season_dataset = resolve_season_dataset(place, season)
+
         geo_coords = load_tripadvisor_geo_coords()
         geo_flow = get_flow_data()
 
-        for place in geo_flow.index:
+        for flow_place in geo_flow.index:
             try:
-                geo_flow['Latitude'][place] = geo_coords['latitude'][place]
-                geo_flow['Longitude'][place] = geo_coords['longitude'][place]
+                geo_flow.loc[flow_place, 'Latitude'] = geo_coords.loc[flow_place, 'latitude']
+                geo_flow.loc[flow_place, 'Longitude'] = geo_coords.loc[flow_place, 'longitude']
             except:
-                geo_flow['Latitude'][place] = ''
-                geo_flow['Longitude'][place] = ''
+                geo_flow.loc[flow_place, 'Latitude'] = ''
+                geo_flow.loc[flow_place, 'Longitude'] = ''
         PlacesList = geo_coords.index
         SeasonList = {'summer_pre_covid': 'Summer 2019', 'winter_pre_covid': 'Winter 2019',
                       'summer_covid': 'Summer 2020', 'winter_covid': 'Winter 2020'}
-        season = self.get_season()
-        place = self.get_place()
-
-        geo_trajectory = pd.read_csv('./data/Tripadvisor_datasets/Seasons/{}_{}.csv'.format(place, season))
+        geo_trajectory = pd.read_csv(season_dataset)
         figure = self.get_map(geo_flow)
         figure2 = self.get_map2(geo_trajectory)
         context['map'] = figure
@@ -345,14 +374,12 @@ class ThfView(TemplateView):
         tfh_month_select = self.request.GET.get('tfh_month_select', 'Jul 2020')
         tfh_month_select = datetime.strptime(tfh_month_select, '%b %Y')
         tfh_month_select = tfh_month_select.strftime("%Y-%m-%d")
-        print(tfh_month_select)
         return tfh_month_select
 
     def get_date_hist(self):
         month_picker = self.request.GET.get('month_picker', 'Apr 2020')
         month_picker = datetime.strptime(month_picker, '%b %Y')
         month_picker = month_picker.strftime("%Y-%m-%d")
-        print(month_picker)
         return month_picker
 
     def top_ten_place(self, geo, **kwargs):
@@ -462,33 +489,27 @@ class TrsView(TemplateView):
 
     def get_country(self):
         trs_country_select = self.request.GET.get('trs_country_select', 'Tunisia')
-        print(trs_country_select)
         return trs_country_select
 
     def get_gerCity(self):
         trs_city_select = self.request.GET.get('trs_city_select', 'Munich')
-        print(trs_city_select)
         return trs_city_select
 
     def get_visit(self):
         trs_visit_select = self.request.GET.get('trs_visit_select', 'solo')
         trs_visit_select = 'visit_Traveled ' + trs_visit_select
-        print(trs_visit_select)
         return trs_visit_select
 
     def get_accommodation(self):
         trs_accommodation_select = self.request.GET.get('trs_accommodation_select', 'Maxvorstadt')
-        print(trs_accommodation_select)
         return trs_accommodation_select
 
     def get_date_visit(self):
         date_picker = self.request.GET.get('date_picker', '2020-08-10')
-        print(date_picker)
         return date_picker
 
     def get_preference(self):
         trs_preferences_select = self.request.GET.get('trs_preferences_select', 'outdoors')
-        print(trs_preferences_select)
         return trs_preferences_select
 
 

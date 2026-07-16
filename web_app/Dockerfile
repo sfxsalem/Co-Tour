@@ -1,18 +1,26 @@
-# pull official base image
-FROM python:3.8.5
+FROM python:3.12-slim
 
-# set work directory
-WORKDIR /usr/src/app
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1
 
-# set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+RUN addgroup --system app && adduser --system --ingroup app app
 
-# install dependencies
-RUN pip install --upgrade pip
-RUN pip install  --upgrade setuptools
+WORKDIR /app
+
 COPY ./requirements.txt .
-RUN pip install  --no-cache-dir --ignore-installed -r requirements.txt 
+RUN pip install --require-hashes -r requirements.txt
 
-# copy project
-COPY . .
+COPY --chown=app:app . .
+
+RUN DJANGO_SECRET_KEY=collectstatic-only DJANGO_DEBUG=0 python manage.py collectstatic --noinput
+
+USER app
+
+EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD python -c "import socket; socket.create_connection(('127.0.0.1', 8000), 2).close()"
+
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "2", "--threads", "2", "--access-logfile", "-", "web_app.wsgi:application"]
