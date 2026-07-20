@@ -12,13 +12,6 @@ jobs:
   test-and-scan:
     runs-on: ubuntu-latest
     env:
-      DJANGO_SECRET_KEY: ci-only-7f1c9d2e4a6b8c0d3e5f7a9b1c2d4e6f8a0b3c5d7e9f
-      DJANGO_DEBUG: "0"
-      DJANGO_ALLOWED_HOSTS: localhost,testserver
-      DJANGO_SECURE_SSL_REDIRECT: "0"
-      DJANGO_SESSION_COOKIE_SECURE: "1"
-      DJANGO_CSRF_COOKIE_SECURE: "1"
-      DJANGO_HSTS_SECONDS: "31536000"
       LOKY_MAX_CPU_COUNT: "2"
     steps:
       - uses: actions/checkout@v4
@@ -36,14 +29,6 @@ jobs:
           python -m pip install --require-hashes -r web_app/requirements.txt
           python -m pip install bandit pip-audit
 
-      - name: Build production static assets
-        working-directory: web_app
-        run: python manage.py collectstatic --noinput
-
-      - name: Run Django tests
-        working-directory: web_app
-        run: python manage.py test webapp
-
       - name: Run service and FastAPI tests
         env:
           PYTHONPATH: web_app
@@ -59,12 +44,6 @@ jobs:
 
       - name: Validate forecast artifacts
         run: python -m unittest src/test_scaler_io.py
-
-      - name: Validate production configuration
-        working-directory: web_app
-        env:
-          DJANGO_SECURE_SSL_REDIRECT: "1"
-        run: python manage.py check --deploy --fail-level WARNING
 
       - name: Static security analysis
         run: bandit -r web_app src Tripadvisor_web_scraper -x Tripadvisor_web_scraper/venv -ll

@@ -3,7 +3,7 @@
     {% for result in recommendations %}
     <article class="result-card" data-testid="recommendation">
         <span class="rank">0{{ result.rank }}</span>
-        <img src="{{ url_for('static', path='/webapp/img/' ~ result.name ~ '.jpg') }}" alt="{{ result.name }}">
+        <img src="{{ url_for('static', path='/img/' ~ result.name ~ '.jpg') }}" alt="{{ result.name }}">
         <div><h2>{{ result.name }}</h2><p>{{ result.address }}</p><small>Match score {{ '%.0f'|format(result.score * 100) }}%</small></div>
     </article>
     {% endfor %}

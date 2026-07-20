@@ -14,8 +14,6 @@ RUN pip install --require-hashes -r requirements.txt
 
 COPY --chown=app:app . .
 
-RUN DJANGO_SECRET_KEY=collectstatic-only DJANGO_DEBUG=0 python manage.py collectstatic --noinput
-
 USER app
 
 EXPOSE 8000

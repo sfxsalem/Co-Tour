@@ -1,5 +1,7 @@
 # Tourist Flow Migration Implementation Plan
 
+> **Historical plan:** This migration is complete. ADR-0002 retired Django, its commands, and the rollback profile; the details below are retained as an implementation record only.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Extract tourist-flow analysis into a deterministic framework-independent service and provide Django plus FastAPI HTML/API parity without weakening the strict FastAPI content-security policy.

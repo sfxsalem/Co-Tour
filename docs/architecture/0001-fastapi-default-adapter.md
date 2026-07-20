@@ -1,6 +1,6 @@
 # ADR-0001: Make FastAPI the default web adapter
 
-**Status:** Accepted
+**Status:** Superseded by ADR-0002
 **Date:** 2026-07-16
 **Deciders:** Co-Tour maintainers
 

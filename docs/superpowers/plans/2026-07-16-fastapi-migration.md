@@ -1,5 +1,7 @@
 # FastAPI Migration Implementation Plan
 
+> **Historical plan:** This migration is complete. ADR-0002 retired Django, its commands, and the rollback profile; the details below are retained as an implementation record only.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Introduce a production-ready FastAPI/Jinja entry point for Co-Tour's recommendation flow while retaining Django as a tested rollback path.

@@ -1,5 +1,7 @@
 # Hotspot Forecast Migration Implementation Plan
 
+> **Historical plan:** This migration is complete. ADR-0002 retired Django, its commands, and the rollback profile; the details below are retained as an implementation record only.
+
 > **For Codex:** Execute this plan task by task with the test-driven-development workflow.
 
 **Goal:** Extract the tourist hotspot forecast into a framework-independent service and expose secure, server-rendered FastAPI HTML and typed JSON endpoints while retaining the Django route as the default fallback.
