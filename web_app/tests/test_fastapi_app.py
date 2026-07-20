@@ -8,6 +8,7 @@ from uuid import UUID
 
 from fastapi.testclient import TestClient
 
+from cotour.artifacts import ArtifactBundle
 from cotour_web.app import create_app
 from cotour_web.observability import request_logger
 
@@ -36,10 +37,16 @@ class FastAPIApplicationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"status": "ready"})
 
+    def test_default_services_share_one_validated_artifact_bundle(self):
+        bundle = self.client.app.state.artifact_bundle
+
+        self.assertIs(self.client.app.state.recommendation_service.artifacts, bundle)
+        self.assertIs(self.client.app.state.forecast_service.artifacts, bundle)
+        self.assertIs(self.client.app.state.flow_service.artifacts, bundle)
+
     def test_readiness_fails_closed_when_an_artifact_service_is_unavailable(self):
-        flow_service = self.client.app.state.flow_service
         with patch.object(
-            flow_service, "options", side_effect=RuntimeError("private detail")
+            ArtifactBundle, "assert_ready", side_effect=RuntimeError("private detail")
         ):
             response = self.client.get("/health/ready")
 

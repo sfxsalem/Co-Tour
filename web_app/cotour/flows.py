@@ -3,10 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from math import isclose, isfinite
 from pathlib import Path
 
-import pandas as pd
+from cotour.artifacts import ArtifactBundle, load_artifact_bundle
 
 
 DEFAULT_PLACE = "Olympiapark"
@@ -17,10 +16,6 @@ MUNICH_LONGITUDE_RANGE = (11.3, 11.8)
 
 class FlowInputError(ValueError):
     """Raised when a requested catalog selection is unavailable."""
-
-
-class FlowDataError(RuntimeError):
-    """Raised when a local tourist-flow artifact is malformed."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -85,14 +80,15 @@ SEASON_OPTIONS = (
 class FlowService:
     """Expose validated flow analysis without leaking pandas or file paths."""
 
-    def __init__(self, data_directory: Path | str):
-        self.data_directory = Path(data_directory).resolve()
-        self._season_directory = (
-            self.data_directory / "Tripadvisor_datasets" / "Seasons"
-        ).resolve()
+    def __init__(self, data_directory: Path | str | ArtifactBundle):
+        self.artifacts = (
+            data_directory
+            if isinstance(data_directory, ArtifactBundle)
+            else load_artifact_bundle(data_directory)
+        )
+        self.data_directory = self.artifacts.root
         places, self._attractions, self._diagnostics = self._load_attractions()
         self._options = FlowOptions(places=places, seasons=SEASON_OPTIONS)
-        self._manifest = self._build_manifest()
         self._origin_cache: dict[tuple[str, str], tuple[VisitorOrigin, ...]] = {}
 
     def options(self) -> FlowOptions:
@@ -130,38 +126,14 @@ class FlowService:
         tuple[AttractionCluster, ...],
         tuple[FlowDiagnostic, ...],
     ]:
-        cluster_path = self.data_directory / "K_means_data" / "clusters.csv"
-        coordinate_path = (
-            self.data_directory
-            / "geocoordinates"
-            / "TripAdvisor_geoattractions.csv"
-        )
-        clusters = self._read_csv(cluster_path, {"attraction_name", "Cluster"})[
-            ["attraction_name", "Cluster"]
+        clusters = self.artifacts.flows.clusters.loc[
+            :, ["attraction_name", "Cluster"]
         ].copy()
-        coordinates = self._read_csv(
-            coordinate_path, {"place", "latitude", "longitude"}
-        )[["place", "latitude", "longitude"]].copy()
-
-        self._require_unique(clusters, "attraction_name", cluster_path)
-        self._require_unique(coordinates, "place", coordinate_path)
-        clusters["Cluster"] = self._numeric_column(
-            clusters, "Cluster", cluster_path
-        )
-        if any(value < 0 or not float(value).is_integer() for value in clusters["Cluster"]):
-            raise FlowDataError(f"Cluster identifiers must be non-negative integers: {cluster_path}")
-        coordinates["latitude"] = self._numeric_column(
-            coordinates, "latitude", coordinate_path
-        )
-        coordinates["longitude"] = self._numeric_column(
-            coordinates, "longitude", coordinate_path
-        )
-        self._require_coordinates(coordinates, coordinate_path)
-
-        cluster_names = set(clusters["attraction_name"])
-        coordinate_names = set(coordinates["place"])
-        if cluster_names != coordinate_names:
-            raise FlowDataError("Cluster and attraction-coordinate catalogs do not match")
+        coordinates = self.artifacts.flows.coordinates.loc[
+            :, ["place", "latitude", "longitude"]
+        ].copy()
+        cluster_names = set(clusters["attraction_name"].astype(str))
+        coordinate_names = set(coordinates["place"].astype(str))
 
         merged = clusters.merge(
             coordinates,
@@ -195,46 +167,18 @@ class FlowService:
         )
         return tuple(sorted(coordinate_names)), attractions, diagnostics
 
-    def _build_manifest(self) -> dict[tuple[str, str], Path]:
-        if not self._season_directory.is_dir():
-            raise FlowDataError(
-                f"Tourist-flow season directory is missing: {self._season_directory}"
-            )
-        manifest: dict[tuple[str, str], Path] = {}
-        for place in self._options.places:
-            for season in self._options.seasons:
-                path = (self._season_directory / f"{place}_{season.code}.csv").resolve()
-                if path.parent != self._season_directory or not path.is_file():
-                    raise FlowDataError(
-                        f"Missing tourist-flow artifact for {place} and {season.code}"
-                    )
-                manifest[(place, season.code)] = path
-        return manifest
-
     def _load_origins(self, place: str, season: str) -> tuple[VisitorOrigin, ...]:
         cache_key = (place, season)
         if cache_key in self._origin_cache:
             return self._origin_cache[cache_key]
 
-        path = self._manifest[cache_key]
-        origins = self._read_csv(
-            path, {"country", "flux density", "latitude", "longitude"}
-        )[["country", "flux density", "latitude", "longitude"]].copy()
+        origins = self.artifacts.flows.origins[cache_key].loc[
+            :, ["country", "flux density", "latitude", "longitude"]
+        ].copy()
         if origins.empty:
             result: tuple[VisitorOrigin, ...] = ()
             self._origin_cache[cache_key] = result
             return result
-
-        self._require_unique(origins, "country", path)
-        if origins["country"].isna().any() or origins["country"].astype(str).str.strip().eq("").any():
-            raise FlowDataError(f"Visitor countries must be non-empty: {path}")
-        for column in ("flux density", "latitude", "longitude"):
-            origins[column] = self._numeric_column(origins, column, path)
-        self._require_coordinates(origins, path)
-        if not origins["flux density"].between(0, 100).all():
-            raise FlowDataError(f"Visitor shares must be between 0 and 100: {path}")
-        if not isclose(float(origins["flux density"].sum()), 100.0, abs_tol=0.05):
-            raise FlowDataError(f"Visitor shares must total 100 percent: {path}")
 
         origins = origins.sort_values(
             ["flux density", "country"], ascending=[False, True], kind="stable"
@@ -252,38 +196,3 @@ class FlowService:
         )
         self._origin_cache[cache_key] = result
         return result
-
-    @staticmethod
-    def _read_csv(path: Path, required_columns: set[str]) -> pd.DataFrame:
-        try:
-            data = pd.read_csv(path)
-        except (FileNotFoundError, pd.errors.EmptyDataError, pd.errors.ParserError) as exc:
-            raise FlowDataError(f"Unable to load tourist-flow artifact: {path}") from exc
-        missing = required_columns.difference(data.columns)
-        if missing:
-            raise FlowDataError(
-                f"Tourist-flow artifact is missing columns {sorted(missing)}: {path}"
-            )
-        return data
-
-    @staticmethod
-    def _require_unique(data: pd.DataFrame, column: str, path: Path) -> None:
-        if data[column].isna().any() or data[column].duplicated().any():
-            raise FlowDataError(f"{column} values must be present and unique: {path}")
-
-    @staticmethod
-    def _numeric_column(data: pd.DataFrame, column: str, path: Path) -> pd.Series:
-        try:
-            numeric = pd.to_numeric(data[column], errors="raise")
-        except (TypeError, ValueError) as exc:
-            raise FlowDataError(f"{column} values must be numeric: {path}") from exc
-        if not numeric.map(lambda value: isfinite(float(value))).all():
-            raise FlowDataError(f"{column} values must be finite: {path}")
-        return numeric
-
-    @staticmethod
-    def _require_coordinates(data: pd.DataFrame, path: Path) -> None:
-        if not data["latitude"].between(-90, 90).all() or not data[
-            "longitude"
-        ].between(-180, 180).all():
-            raise FlowDataError(f"Coordinates are outside WGS84 bounds: {path}")

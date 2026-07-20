@@ -13,6 +13,8 @@ from countrygroups import EUROPEAN_UNION
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import minmax_scale
 
+from cotour.artifacts import ArtifactBundle, load_artifact_bundle
+
 
 VISIT_COLUMN_PREFIX = "visit_Traveled "
 ORIGIN_MUNICH = "provenance_Munich"
@@ -96,43 +98,37 @@ def classify_origin(country: str, german_city: str | None) -> str:
 class RecommendationService:
     """Load local artifacts and rank attractions for a validated traveler profile."""
 
-    def __init__(self, data_directory: Path):
-        self.data_directory = Path(data_directory).resolve()
-
-    def _read_csv(self, relative_path: str) -> pd.DataFrame:
-        path = (self.data_directory / relative_path).resolve()
-        if self.data_directory not in path.parents:
-            raise RuntimeError("Recommendation artifact escaped the data directory")
-        return pd.read_csv(path)
+    def __init__(self, data_directory: Path | str | ArtifactBundle):
+        self.artifacts = (
+            data_directory
+            if isinstance(data_directory, ArtifactBundle)
+            else load_artifact_bundle(data_directory)
+        )
+        self.data_directory = self.artifacts.root
 
     @cached_property
     def _countries(self) -> tuple[str, ...]:
-        values = self._read_csv("geocoordinates/country.csv")["value"]
-        return tuple(values.dropna().astype(str))
+        return self.artifacts.recommendations.countries
 
     @cached_property
     def _german_cities(self) -> tuple[str, ...]:
-        values = self._read_csv("geocoordinates/germanCities.csv")["city"]
-        return tuple(dict.fromkeys(values.dropna().astype(str)))
+        return self.artifacts.recommendations.german_cities
 
     @cached_property
     def _recommendation_data(self) -> pd.DataFrame:
-        return self._read_csv("Recommendation data/rec_dataset.csv")
+        return self.artifacts.recommendations.catalog
 
     @cached_property
     def _user_data(self) -> pd.DataFrame:
-        return self._read_csv("Recommendation data/user_data.csv")
+        return self.artifacts.recommendations.users
 
     @cached_property
     def _forecast_data(self) -> pd.DataFrame:
-        data = self._read_csv("Forecast Data/dataset_predicted.csv")
-        data["DATE"] = pd.to_datetime(data["DATE"])
-        return data
+        return self.artifacts.recommendations.predicted_forecasts
 
     @cached_property
     def _addresses(self) -> pd.Series:
-        data = self._read_csv("geocoordinates/geoattractions.csv")
-        return data.set_index("place")["address"]
+        return self.artifacts.recommendations.addresses
 
     @cached_property
     def _model(self) -> KMeans:

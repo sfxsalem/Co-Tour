@@ -1,9 +1,7 @@
 from pathlib import Path
-from tempfile import TemporaryDirectory
 from unittest import TestCase
 
 from cotour.flows import (
-    FlowDataError,
     FlowInputError,
     FlowQuery,
     FlowService,
@@ -86,48 +84,3 @@ class FlowServiceTests(TestCase):
             self.service.analyze(FlowQuery(place=attacker_value))
 
         self.assertNotIn(attacker_value, str(captured.exception))
-
-    def test_rejects_duplicate_cluster_rows_as_corrupt_artifacts(self):
-        with TemporaryDirectory() as temporary_directory:
-            root = Path(temporary_directory)
-            self._write_minimal_artifacts(root, duplicate_cluster=True)
-
-            with self.assertRaises(FlowDataError):
-                FlowService(root)
-
-    def test_rejects_nonempty_origin_percentages_that_do_not_total_100(self):
-        with TemporaryDirectory() as temporary_directory:
-            root = Path(temporary_directory)
-            self._write_minimal_artifacts(root, origin_share=60)
-            service = FlowService(root)
-
-            with self.assertRaises(FlowDataError):
-                service.analyze(FlowQuery(place="Sample Attraction"))
-
-    @staticmethod
-    def _write_minimal_artifacts(
-        root: Path, *, duplicate_cluster: bool = False, origin_share: int = 100
-    ) -> None:
-        cluster_directory = root / "K_means_data"
-        coordinate_directory = root / "geocoordinates"
-        season_directory = root / "Tripadvisor_datasets" / "Seasons"
-        cluster_directory.mkdir(parents=True)
-        coordinate_directory.mkdir(parents=True)
-        season_directory.mkdir(parents=True)
-
-        cluster_rows = "Sample Attraction,0\n"
-        if duplicate_cluster:
-            cluster_rows += "Sample Attraction,1\n"
-        (cluster_directory / "clusters.csv").write_text(
-            "attraction_name,Cluster\n" + cluster_rows, encoding="utf-8"
-        )
-        (coordinate_directory / "TripAdvisor_geoattractions.csv").write_text(
-            "place,latitude,longitude\nSample Attraction,48.14,11.58\n",
-            encoding="utf-8",
-        )
-        for season in SEASON_CODES:
-            (season_directory / f"Sample Attraction_{season}.csv").write_text(
-                "country,flux density,latitude,longitude\n"
-                f"Germany,{origin_share},51.08,10.42\n",
-                encoding="utf-8",
-            )
