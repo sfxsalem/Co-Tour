@@ -9,7 +9,7 @@ from cotour.forecasts import (
 )
 
 
-DATA_DIRECTORY = Path(__file__).resolve().parents[2] / "data"
+DATA_DIRECTORY = Path(__file__).resolve().parents[1] / "data"
 
 
 class ForecastServiceTests(TestCase):

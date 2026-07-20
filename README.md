@@ -96,6 +96,18 @@ The tourist-flow API accepts repository-backed place and season values:
 
 All 84 place/season combinations are validated. Seven COVID-period artifacts contain no origin observations and return an empty `origins` list rather than an error. The UI and API also expose a data diagnostic for the source coordinate that places English Garden outside Munich; that attraction is omitted from the Munich cluster map until the artifact is corrected.
 
+### Runtime artifact releases
+
+The deployed analytics inputs under `web_app/data` form one authenticated release. `artifact-manifest.json` declares all 94 active CSV files with their schema, row count, byte count, and SHA-256 digest. Application startup validates the complete bundle and its cross-file catalogs before constructing the recommendation, forecast, and flow services; `/health/ready` therefore represents the already-validated snapshot.
+
+After an intentional data change, regenerate the manifest explicitly from the repository root and review both the data and manifest diff:
+
+```bash
+PYTHONPATH=web_app python -m cotour.artifact_cli build-manifest web_app/data --bundle-version YYYY.MM.N
+```
+
+Runtime code never repairs or regenerates this file automatically. Research inputs under the root `data/` directory are separate pipeline lineage and are not copied into the production image.
+
 Run the test suites from the repository root:
 
 ```bash
