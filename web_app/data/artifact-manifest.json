@@ -1,0 +1,1376 @@
+{
+  "bundle_version": "2026.07.2",
+  "contracts": {
+    "allowed_ungeocoded_forecasts": []
+  },
+  "files": [
+    {
+      "bytes": 4031,
+      "columns": [
+        "attraction_name",
+        "Traveled as a couple",
+        "Traveled on business",
+        "Traveled solo",
+        "Traveled with family",
+        "Traveled with friends",
+        "visitors_from_eu",
+        "visitors_from_munich",
+        "visitors_outside_eu",
+        "visitors_outside_munich",
+        "Cluster"
+      ],
+      "key": "flow.clusters",
+      "path": "K_means_data/clusters.csv",
+      "rows": 21,
+      "sha256": "d8d161d35838cabfd148b19c3af6f77ac5dcf3b967bc7be63209c0f5ab753835"
+    },
+    {
+      "bytes": 3897,
+      "columns": [
+        "place",
+        "latitude",
+        "longitude",
+        "city_district",
+        "address"
+      ],
+      "key": "flow.coordinates",
+      "path": "geocoordinates/TripAdvisor_geoattractions.csv",
+      "rows": 21,
+      "sha256": "55da7a77a7e8eb8ea7a4964c1c3648669ddf6e9ad6238fcc286486afa68bbc54"
+    },
+    {
+      "bytes": 79,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Allianz Arena:summer_covid",
+      "path": "Tripadvisor_datasets/Seasons/Allianz Arena_summer_covid.csv",
+      "rows": 1,
+      "sha256": "279c83ce1d2d65f01fbafa71df421c24d01d051a98699f42aefd69e8037ab3fa"
+    },
+    {
+      "bytes": 1280,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Allianz Arena:summer_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Allianz Arena_summer_pre_covid.csv",
+      "rows": 24,
+      "sha256": "af382e1e1e342d55200fd4b5ed645033478264d83ab40d18cb1ddb27a95cc817"
+    },
+    {
+      "bytes": 149,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Allianz Arena:winter_covid",
+      "path": "Tripadvisor_datasets/Seasons/Allianz Arena_winter_covid.csv",
+      "rows": 3,
+      "sha256": "40a09c5d27f8abc4498553ef98254b5bc5f3db1a27e98a8003924c85716a4d27"
+    },
+    {
+      "bytes": 1766,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Allianz Arena:winter_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Allianz Arena_winter_pre_covid.csv",
+      "rows": 33,
+      "sha256": "6131db8955beae6119eb2c5c6e1fb9c6ffdeade4c9bc7c065f29aeb1042da8df"
+    },
+    {
+      "bytes": 300,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Alte Pinakothek:summer_covid",
+      "path": "Tripadvisor_datasets/Seasons/Alte Pinakothek_summer_covid.csv",
+      "rows": 5,
+      "sha256": "46010ab29d7f479a6e77021bd07148510494aae7039481200aa64f25b96cbf70"
+    },
+    {
+      "bytes": 642,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Alte Pinakothek:summer_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Alte Pinakothek_summer_pre_covid.csv",
+      "rows": 12,
+      "sha256": "6b10327045ed56bd5806d6b999dc8dc0159538d18a404b2e3460e5e481262b3e"
+    },
+    {
+      "bytes": 112,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Alte Pinakothek:winter_covid",
+      "path": "Tripadvisor_datasets/Seasons/Alte Pinakothek_winter_covid.csv",
+      "rows": 2,
+      "sha256": "c1ea25adcc50c41d9ad673b8819f4fcc0ea224b14c7321f04eea7d9ee63c8035"
+    },
+    {
+      "bytes": 1141,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Alte Pinakothek:winter_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Alte Pinakothek_winter_pre_covid.csv",
+      "rows": 21,
+      "sha256": "58b3bd76dcb0d9904e671f2037be1187fa44d76b99600b6685582672c6bd403d"
+    },
+    {
+      "bytes": 149,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Asamkirche Munich:summer_covid",
+      "path": "Tripadvisor_datasets/Seasons/Asamkirche Munich_summer_covid.csv",
+      "rows": 2,
+      "sha256": "39a8e6b33d59e58cb6cdb39c0ddaec42dd5cb73332e53d083df139a548ccc4f1"
+    },
+    {
+      "bytes": 368,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Asamkirche Munich:summer_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Asamkirche Munich_summer_pre_covid.csv",
+      "rows": 6,
+      "sha256": "52ba4d2a2ba495c468b40c5624ce4e212ff12d26137bdb6a4384165a8b95f3a1"
+    },
+    {
+      "bytes": 79,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Asamkirche Munich:winter_covid",
+      "path": "Tripadvisor_datasets/Seasons/Asamkirche Munich_winter_covid.csv",
+      "rows": 1,
+      "sha256": "279c83ce1d2d65f01fbafa71df421c24d01d051a98699f42aefd69e8037ab3fa"
+    },
+    {
+      "bytes": 805,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Asamkirche Munich:winter_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Asamkirche Munich_winter_pre_covid.csv",
+      "rows": 15,
+      "sha256": "9c6dc3ed3828d6f11999803577772602edc2d01ec84cf5a54cb39edfa3e1ff26"
+    },
+    {
+      "bytes": 156,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:BMW Museum:summer_covid",
+      "path": "Tripadvisor_datasets/Seasons/BMW Museum_summer_covid.csv",
+      "rows": 3,
+      "sha256": "704dce6fee6301114e7b4351caaa826c7f626e3eb89811cd50e7cc2a5da95129"
+    },
+    {
+      "bytes": 1245,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:BMW Museum:summer_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/BMW Museum_summer_pre_covid.csv",
+      "rows": 23,
+      "sha256": "67817eefa990ef7a7e46d27932dd6d3fb48896b40540c793a48af45b83b48d5b"
+    },
+    {
+      "bytes": 122,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:BMW Museum:winter_covid",
+      "path": "Tripadvisor_datasets/Seasons/BMW Museum_winter_covid.csv",
+      "rows": 2,
+      "sha256": "fc85f6a1a4d206a55ec28fd6132dad07a8878e6141a57e5b09062cb1a524f0ce"
+    },
+    {
+      "bytes": 1847,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:BMW Museum:winter_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/BMW Museum_winter_pre_covid.csv",
+      "rows": 34,
+      "sha256": "4305ed11cbbeaf29978433446942f3f3363d9053a81167e7ceb9864392e818e8"
+    },
+    {
+      "bytes": 79,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Bayerisches Nationalmuseum:summer_covid",
+      "path": "Tripadvisor_datasets/Seasons/Bayerisches Nationalmuseum_summer_covid.csv",
+      "rows": 1,
+      "sha256": "279c83ce1d2d65f01fbafa71df421c24d01d051a98699f42aefd69e8037ab3fa"
+    },
+    {
+      "bytes": 337,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Bayerisches Nationalmuseum:summer_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Bayerisches Nationalmuseum_summer_pre_covid.csv",
+      "rows": 8,
+      "sha256": "a3008d82059e1214287390c642111da8b9a334c5510d11bf9139fc71a88e04ec"
+    },
+    {
+      "bytes": 41,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Bayerisches Nationalmuseum:winter_covid",
+      "path": "Tripadvisor_datasets/Seasons/Bayerisches Nationalmuseum_winter_covid.csv",
+      "rows": 0,
+      "sha256": "fcae46b1845bd0dfab2cf48cfba15fcdb024e923a67c1ef469dbddc6d5ba0c83"
+    },
+    {
+      "bytes": 223,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Bayerisches Nationalmuseum:winter_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Bayerisches Nationalmuseum_winter_pre_covid.csv",
+      "rows": 4,
+      "sha256": "2fd256588e6f2bcdb953d3e2927f39b6bf3f0f1ab7b62276b85ccd02c106f071"
+    },
+    {
+      "bytes": 41,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Bayerisches Staatsoper:summer_covid",
+      "path": "Tripadvisor_datasets/Seasons/Bayerisches Staatsoper_summer_covid.csv",
+      "rows": 0,
+      "sha256": "fcae46b1845bd0dfab2cf48cfba15fcdb024e923a67c1ef469dbddc6d5ba0c83"
+    },
+    {
+      "bytes": 226,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Bayerisches Staatsoper:summer_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Bayerisches Staatsoper_summer_pre_covid.csv",
+      "rows": 5,
+      "sha256": "4371cca301479f1b71b4949176d7bff6a1ddecce639a42766a0cd66bf530c09b"
+    },
+    {
+      "bytes": 41,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Bayerisches Staatsoper:winter_covid",
+      "path": "Tripadvisor_datasets/Seasons/Bayerisches Staatsoper_winter_covid.csv",
+      "rows": 0,
+      "sha256": "fcae46b1845bd0dfab2cf48cfba15fcdb024e923a67c1ef469dbddc6d5ba0c83"
+    },
+    {
+      "bytes": 340,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Bayerisches Staatsoper:winter_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Bayerisches Staatsoper_winter_pre_covid.csv",
+      "rows": 6,
+      "sha256": "49c9489748237f9a297241447fb489d6c513f6474d65d4ed3638508c3044d38e"
+    },
+    {
+      "bytes": 285,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Deutsches Museum:summer_covid",
+      "path": "Tripadvisor_datasets/Seasons/Deutsches Museum_summer_covid.csv",
+      "rows": 5,
+      "sha256": "c6a43b4044d94e0ce0f55d4e0e9bde33303d835a0b6726ff65c9db838f565697"
+    },
+    {
+      "bytes": 1012,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Deutsches Museum:summer_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Deutsches Museum_summer_pre_covid.csv",
+      "rows": 19,
+      "sha256": "e3e2424137bf79bc858f61ae5c530bb6606578e4ee2a4138d2301868d25f7dcb"
+    },
+    {
+      "bytes": 114,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Deutsches Museum:winter_covid",
+      "path": "Tripadvisor_datasets/Seasons/Deutsches Museum_winter_covid.csv",
+      "rows": 2,
+      "sha256": "acdf4e11c2366c16093660a5fd67b215f4827edc9d2559a2460f8cd7445e28ad"
+    },
+    {
+      "bytes": 1706,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Deutsches Museum:winter_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Deutsches Museum_winter_pre_covid.csv",
+      "rows": 31,
+      "sha256": "2a7ef4e0ec3a73534a7db0eebebc62462f78c0bcce7ca4ca6a489aa7a37f98f0"
+    },
+    {
+      "bytes": 395,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Eisbach:summer_covid",
+      "path": "Tripadvisor_datasets/Seasons/Eisbach_summer_covid.csv",
+      "rows": 7,
+      "sha256": "45e8779a7d83b322836f30638142fe9700e01d2e62d8cfc33a2373abc597f90e"
+    },
+    {
+      "bytes": 246,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Eisbach:summer_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Eisbach_summer_pre_covid.csv",
+      "rows": 4,
+      "sha256": "0cbe2caebb500aaae861e8674a82925a761deac6083f43a98e937a24c4347415"
+    },
+    {
+      "bytes": 78,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Eisbach:winter_covid",
+      "path": "Tripadvisor_datasets/Seasons/Eisbach_winter_covid.csv",
+      "rows": 1,
+      "sha256": "176db597bbba43504c3e6ce57cf0d678011f4793662d3ced9c3508a57755b36d"
+    },
+    {
+      "bytes": 920,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Eisbach:winter_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Eisbach_winter_pre_covid.csv",
+      "rows": 17,
+      "sha256": "1080da8492ff1bc76dcb487627a4994abc8cc6b1184d857ddd988f9375e5cd17"
+    },
+    {
+      "bytes": 340,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:English Garden:summer_covid",
+      "path": "Tripadvisor_datasets/Seasons/English Garden_summer_covid.csv",
+      "rows": 8,
+      "sha256": "4a085492dd314c3e64ba0f454fc96fd92b85d2114371bc06528c07a63bbe57ef"
+    },
+    {
+      "bytes": 1773,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:English Garden:summer_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/English Garden_summer_pre_covid.csv",
+      "rows": 33,
+      "sha256": "a8f57c3150ec48f26673a3d47c00d1cb984eef0a21996d7a402feb928dd93468"
+    },
+    {
+      "bytes": 297,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:English Garden:winter_covid",
+      "path": "Tripadvisor_datasets/Seasons/English Garden_winter_covid.csv",
+      "rows": 5,
+      "sha256": "928b724df96c58ffb08ebfa52f05acc222b6a1b9954f0251b1ea929c8b86a382"
+    },
+    {
+      "bytes": 1890,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:English Garden:winter_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/English Garden_winter_pre_covid.csv",
+      "rows": 35,
+      "sha256": "c8210dcbf196189989aa59dcf910e2537913d684d045fe7a1efe312b16b2cda6"
+    },
+    {
+      "bytes": 86,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Lenbachhaus:summer_covid",
+      "path": "Tripadvisor_datasets/Seasons/Lenbachhaus_summer_covid.csv",
+      "rows": 1,
+      "sha256": "83d5ae48dfcb2bbd648a4b868a9021a293fc739128e070a7519a5955aee6347b"
+    },
+    {
+      "bytes": 187,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Lenbachhaus:summer_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Lenbachhaus_summer_pre_covid.csv",
+      "rows": 3,
+      "sha256": "1fb77a430e7f984c5553362c262efad8772ec747099e8b2b89bca37c5fb7d10f"
+    },
+    {
+      "bytes": 41,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Lenbachhaus:winter_covid",
+      "path": "Tripadvisor_datasets/Seasons/Lenbachhaus_winter_covid.csv",
+      "rows": 0,
+      "sha256": "fcae46b1845bd0dfab2cf48cfba15fcdb024e923a67c1ef469dbddc6d5ba0c83"
+    },
+    {
+      "bytes": 307,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Lenbachhaus:winter_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Lenbachhaus_winter_pre_covid.csv",
+      "rows": 7,
+      "sha256": "5f93fdab8bf7b3cd6208394aff3e54a7583dd90a933715dcde0130a1f57dcb9c"
+    },
+    {
+      "bytes": 390,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Marienplatz:summer_covid",
+      "path": "Tripadvisor_datasets/Seasons/Marienplatz_summer_covid.csv",
+      "rows": 7,
+      "sha256": "321917e58709719dce0b519a979f0595721db77a3a73f0033df803ff2be44e5c"
+    },
+    {
+      "bytes": 1652,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Marienplatz:summer_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Marienplatz_summer_pre_covid.csv",
+      "rows": 31,
+      "sha256": "b4bc2994045d5f611124d34881bde2781788151662a2378dbbc18e8bb2dd4d84"
+    },
+    {
+      "bytes": 655,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Marienplatz:winter_covid",
+      "path": "Tripadvisor_datasets/Seasons/Marienplatz_winter_covid.csv",
+      "rows": 12,
+      "sha256": "07754dc961bb62f467dba8b70761ec09f42a6e6168024a4ede09fa343ffb2ee8"
+    },
+    {
+      "bytes": 3485,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Marienplatz:winter_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Marienplatz_winter_pre_covid.csv",
+      "rows": 64,
+      "sha256": "3b6c208b227cbeb6b09ba168fda5321fb9be07f2dcde6109a88e452aa45c4042"
+    },
+    {
+      "bytes": 236,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Munich Residenz:summer_covid",
+      "path": "Tripadvisor_datasets/Seasons/Munich Residenz_summer_covid.csv",
+      "rows": 4,
+      "sha256": "fe8e46b535a247a76b788943dc6b289a9dd5cbe7b21a9abdc9abeaeb2771144a"
+    },
+    {
+      "bytes": 1171,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Munich Residenz:summer_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Munich Residenz_summer_pre_covid.csv",
+      "rows": 22,
+      "sha256": "ef77bcfe7b29e7e54a8ea430a8e40d73df1bc1d82c944dbaf21cdd8649acb5c6"
+    },
+    {
+      "bytes": 155,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Munich Residenz:winter_covid",
+      "path": "Tripadvisor_datasets/Seasons/Munich Residenz_winter_covid.csv",
+      "rows": 3,
+      "sha256": "40883ee465b720041e7d4fd95bb055cf6e0471292a485b1e7147ac4946fcf29d"
+    },
+    {
+      "bytes": 1716,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Munich Residenz:winter_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Munich Residenz_winter_pre_covid.csv",
+      "rows": 32,
+      "sha256": "190b96ef1d5fc7d7cc52ac93c9eadb43e7a5c383f3801e6274e2cb90cce4b29c"
+    },
+    {
+      "bytes": 76,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Museum Brandhorst:summer_covid",
+      "path": "Tripadvisor_datasets/Seasons/Museum Brandhorst_summer_covid.csv",
+      "rows": 1,
+      "sha256": "66a48a3703e591ac7d68cffc2c79728d99d7d36d03f4fb49201f00838705690f"
+    },
+    {
+      "bytes": 248,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Museum Brandhorst:summer_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Museum Brandhorst_summer_pre_covid.csv",
+      "rows": 4,
+      "sha256": "060f1957869c8f6e8e6156ff71f06019b95936c7120411c71ddb47e892e7c668"
+    },
+    {
+      "bytes": 41,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Museum Brandhorst:winter_covid",
+      "path": "Tripadvisor_datasets/Seasons/Museum Brandhorst_winter_covid.csv",
+      "rows": 0,
+      "sha256": "fcae46b1845bd0dfab2cf48cfba15fcdb024e923a67c1ef469dbddc6d5ba0c83"
+    },
+    {
+      "bytes": 157,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Museum Brandhorst:winter_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Museum Brandhorst_winter_pre_covid.csv",
+      "rows": 3,
+      "sha256": "82c0a673c40356afd1f98117959cded98d074f131d4a44145551e423c80bc6c7"
+    },
+    {
+      "bytes": 119,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Neues Rathaus Munich:summer_covid",
+      "path": "Tripadvisor_datasets/Seasons/Neues Rathaus Munich_summer_covid.csv",
+      "rows": 2,
+      "sha256": "19d8b9177e7a51ddab941c235a15a9d5cc31278463e9bfe3da473ce2e2ff4489"
+    },
+    {
+      "bytes": 829,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Neues Rathaus Munich:summer_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Neues Rathaus Munich_summer_pre_covid.csv",
+      "rows": 15,
+      "sha256": "9aa71b8df83de0bb389beb044d4b61685ed37c6aa1599324528228471475a8a4"
+    },
+    {
+      "bytes": 41,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Neues Rathaus Munich:winter_covid",
+      "path": "Tripadvisor_datasets/Seasons/Neues Rathaus Munich_winter_covid.csv",
+      "rows": 0,
+      "sha256": "fcae46b1845bd0dfab2cf48cfba15fcdb024e923a67c1ef469dbddc6d5ba0c83"
+    },
+    {
+      "bytes": 1987,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Neues Rathaus Munich:winter_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Neues Rathaus Munich_winter_pre_covid.csv",
+      "rows": 37,
+      "sha256": "e16560727ac27f5def7a709f85136121f4e07779fe5b11d14dbc7db95f0f9504"
+    },
+    {
+      "bytes": 332,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Nymphenburg Palace:summer_covid",
+      "path": "Tripadvisor_datasets/Seasons/Nymphenburg Palace_summer_covid.csv",
+      "rows": 6,
+      "sha256": "39151aff401866d3f3b9d0bbbe2e088d15aeb7d652c8afcebbcbea22c917dfc6"
+    },
+    {
+      "bytes": 1305,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Nymphenburg Palace:summer_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Nymphenburg Palace_summer_pre_covid.csv",
+      "rows": 25,
+      "sha256": "89aecaa766fbf047b701f164e8fb2745a82083e41156c59a31308b2be0211a64"
+    },
+    {
+      "bytes": 199,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Nymphenburg Palace:winter_covid",
+      "path": "Tripadvisor_datasets/Seasons/Nymphenburg Palace_winter_covid.csv",
+      "rows": 3,
+      "sha256": "d426c1dc601146a306b57acc3ce300dd2073daea9c93a7793e2d125e5b94031f"
+    },
+    {
+      "bytes": 1507,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Nymphenburg Palace:winter_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Nymphenburg Palace_winter_pre_covid.csv",
+      "rows": 28,
+      "sha256": "ae08c858478964e67072f8d86db468b9bb53ef4758795cbb3f159f04bc18e203"
+    },
+    {
+      "bytes": 198,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Olympiapark:summer_covid",
+      "path": "Tripadvisor_datasets/Seasons/Olympiapark_summer_covid.csv",
+      "rows": 4,
+      "sha256": "a9c75c3d7022096c3d07df46093e3d0906f8955cb056cb1e37aba4e95e26bc52"
+    },
+    {
+      "bytes": 1199,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Olympiapark:summer_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Olympiapark_summer_pre_covid.csv",
+      "rows": 23,
+      "sha256": "674c84041adf4a46cd44787fe7aef5c50b9f544b215c5de0856ab6ca07413137"
+    },
+    {
+      "bytes": 141,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Olympiapark:winter_covid",
+      "path": "Tripadvisor_datasets/Seasons/Olympiapark_winter_covid.csv",
+      "rows": 2,
+      "sha256": "245737e0e59cde4538953efc078bc7cc894071bcbd25313c9fcf307b3c73de08"
+    },
+    {
+      "bytes": 1364,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Olympiapark:winter_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Olympiapark_winter_pre_covid.csv",
+      "rows": 26,
+      "sha256": "e4f08d18aa656ba4f619d5843ebd7f43ba9425a076559a784d6a79c278188382"
+    },
+    {
+      "bytes": 158,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Olympiaturm:summer_covid",
+      "path": "Tripadvisor_datasets/Seasons/Olympiaturm_summer_covid.csv",
+      "rows": 3,
+      "sha256": "68a2d996334c5bbb242c4b27ce05f62e1a0918fe09b468b4e7b6321be7039d15"
+    },
+    {
+      "bytes": 415,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Olympiaturm:summer_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Olympiaturm_summer_pre_covid.csv",
+      "rows": 10,
+      "sha256": "5577380f66791b9db37a97ea5f0aed3e7f894ff0d82f63b51254292c5f8a53d5"
+    },
+    {
+      "bytes": 78,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Olympiaturm:winter_covid",
+      "path": "Tripadvisor_datasets/Seasons/Olympiaturm_winter_covid.csv",
+      "rows": 1,
+      "sha256": "337a0ac5c21b573411c3efd46a56f09519bdd10efd47d405847236b7a0c37a07"
+    },
+    {
+      "bytes": 969,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Olympiaturm:winter_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Olympiaturm_winter_pre_covid.csv",
+      "rows": 18,
+      "sha256": "6464ec3da6e2e596dcb7d13e46ca8b41fb1e87e80da9fda5928a097d6bc3aac7"
+    },
+    {
+      "bytes": 139,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Pinakothek der Moderne:summer_covid",
+      "path": "Tripadvisor_datasets/Seasons/Pinakothek der Moderne_summer_covid.csv",
+      "rows": 2,
+      "sha256": "28cf75f11818f0c729a03dba03fd35a60538c19572c11d91b5a92bd7e730c412"
+    },
+    {
+      "bytes": 439,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Pinakothek der Moderne:summer_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Pinakothek der Moderne_summer_pre_covid.csv",
+      "rows": 8,
+      "sha256": "1cf65ee2be955c112cc852c73748f105320800e38dafc2464b15764d9a1b4712"
+    },
+    {
+      "bytes": 79,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Pinakothek der Moderne:winter_covid",
+      "path": "Tripadvisor_datasets/Seasons/Pinakothek der Moderne_winter_covid.csv",
+      "rows": 1,
+      "sha256": "279c83ce1d2d65f01fbafa71df421c24d01d051a98699f42aefd69e8037ab3fa"
+    },
+    {
+      "bytes": 603,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Pinakothek der Moderne:winter_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Pinakothek der Moderne_winter_pre_covid.csv",
+      "rows": 11,
+      "sha256": "3ad7417a93066301ade6552e2a7ab0c7b9ef99b1d522b8c2b75227d71bef04d0"
+    },
+    {
+      "bytes": 41,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:St-Peter Munich:summer_covid",
+      "path": "Tripadvisor_datasets/Seasons/St-Peter Munich_summer_covid.csv",
+      "rows": 0,
+      "sha256": "fcae46b1845bd0dfab2cf48cfba15fcdb024e923a67c1ef469dbddc6d5ba0c83"
+    },
+    {
+      "bytes": 1359,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:St-Peter Munich:summer_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/St-Peter Munich_summer_pre_covid.csv",
+      "rows": 25,
+      "sha256": "8087c021a2ea43961d56d9886c787f9231293ccdb6deed1eca0852cb3630ac8b"
+    },
+    {
+      "bytes": 148,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:St-Peter Munich:winter_covid",
+      "path": "Tripadvisor_datasets/Seasons/St-Peter Munich_winter_covid.csv",
+      "rows": 2,
+      "sha256": "91e25b6d0e5ae341e25b1638cf45708cc2c3909bc90164be76269df58b931f7d"
+    },
+    {
+      "bytes": 1310,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:St-Peter Munich:winter_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/St-Peter Munich_winter_pre_covid.csv",
+      "rows": 25,
+      "sha256": "c0cea360ec6951467870f65fccbee3c355a062b5fd6c5b0965550f5f3517ec8d"
+    },
+    {
+      "bytes": 79,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Tierpark Hellabrunn:summer_covid",
+      "path": "Tripadvisor_datasets/Seasons/Tierpark Hellabrunn_summer_covid.csv",
+      "rows": 1,
+      "sha256": "279c83ce1d2d65f01fbafa71df421c24d01d051a98699f42aefd69e8037ab3fa"
+    },
+    {
+      "bytes": 655,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Tierpark Hellabrunn:summer_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Tierpark Hellabrunn_summer_pre_covid.csv",
+      "rows": 12,
+      "sha256": "76592fe597b342bc0dcdf86f226392a53ce32f364400560b0cf111ae5c23efb2"
+    },
+    {
+      "bytes": 79,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Tierpark Hellabrunn:winter_covid",
+      "path": "Tripadvisor_datasets/Seasons/Tierpark Hellabrunn_winter_covid.csv",
+      "rows": 1,
+      "sha256": "279c83ce1d2d65f01fbafa71df421c24d01d051a98699f42aefd69e8037ab3fa"
+    },
+    {
+      "bytes": 500,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Tierpark Hellabrunn:winter_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Tierpark Hellabrunn_winter_pre_covid.csv",
+      "rows": 9,
+      "sha256": "a657a5b6c983559d59d2eae643964fa2320ef3daeffa3c841453d761654e71e0"
+    },
+    {
+      "bytes": 139,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Viktualienmarkt:summer_covid",
+      "path": "Tripadvisor_datasets/Seasons/Viktualienmarkt_summer_covid.csv",
+      "rows": 2,
+      "sha256": "2ccd45d84aaa5f46e8b82fcdd5c3b80d3ff4663ccd9e582a3c00fa43532fc56b"
+    },
+    {
+      "bytes": 1359,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Viktualienmarkt:summer_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Viktualienmarkt_summer_pre_covid.csv",
+      "rows": 25,
+      "sha256": "83df79107a43603da68fcffe9901dc748e1cf15d4a34a3140c8eeb33720f21da"
+    },
+    {
+      "bytes": 186,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Viktualienmarkt:winter_covid",
+      "path": "Tripadvisor_datasets/Seasons/Viktualienmarkt_winter_covid.csv",
+      "rows": 3,
+      "sha256": "7df83251670a651f6950f78febd745ccd9e5229315fbec0b0555847be1f1e9b1"
+    },
+    {
+      "bytes": 1383,
+      "columns": [
+        "Unnamed: 0",
+        "country",
+        "flux density",
+        "latitude",
+        "longitude"
+      ],
+      "key": "flow.origins:Viktualienmarkt:winter_pre_covid",
+      "path": "Tripadvisor_datasets/Seasons/Viktualienmarkt_winter_pre_covid.csv",
+      "rows": 26,
+      "sha256": "012e6c1a54a2d0a849c75f6d6025fc27b8e9e2c9edc800c21ae575742568a192"
+    },
+    {
+      "bytes": 4587,
+      "columns": [
+        "place",
+        "latitude",
+        "longitude",
+        "city_district",
+        "address"
+      ],
+      "key": "forecast.coordinates",
+      "path": "geocoordinates/State_geoattractions.csv",
+      "rows": 23,
+      "sha256": "72c26b509d59ef7a36b4859592d2a3dd7743a25c49a5eb71fc76b1b987842178"
+    },
+    {
+      "bytes": 113253,
+      "columns": [
+        "DATE",
+        "Alte Pinakothek",
+        "Olympiapark",
+        "Bayerisches Nationalmuseum",
+        "Bayerisches Staatsoper",
+        "Deutsches Museum",
+        "Kleine Olympiahalle",
+        "Museum Brandhorst",
+        "Museum Mensch und Natur",
+        "Muenchner Kammerspiele",
+        "Muenchner Stadtmuseum",
+        "Nationaltheater",
+        "Neue Pinakothek",
+        "Olympia-Eissportzentrum",
+        "Olympiahalle",
+        "Olympiastadion",
+        "Olympiaturm",
+        "Pinakothek der Moderne",
+        "Prinzregententheater",
+        "Munich Residenz",
+        "Schack galerie",
+        "Lenbachhaus",
+        "Staatstheater am Gaertnerplatz",
+        "Tierpark Hellabrunn",
+        "AnzahlFall"
+      ],
+      "key": "forecast.historical",
+      "path": "Forecast Data/dataset.csv",
+      "rows": 246,
+      "sha256": "439fddc65bcb09effdcaf582043a31fb1cda4cc471cae34fd69f53efa567fd2b"
+    },
+    {
+      "bytes": 1541,
+      "columns": [
+        "DATE",
+        "Alte Pinakothek",
+        "Olympiapark",
+        "Bayerisches Nationalmuseum",
+        "Bayerisches Staatsoper",
+        "Deutsches Museum",
+        "Kleine Olympiahalle",
+        "Museum Brandhorst",
+        "Museum Mensch und Natur",
+        "Muenchner Kammerspiele",
+        "Muenchner Stadtmuseum",
+        "Nationaltheater",
+        "Neue Pinakothek",
+        "Olympia-Eissportzentrum",
+        "Olympiahalle",
+        "Olympiastadion",
+        "Olympiaturm",
+        "Pinakothek der Moderne",
+        "Prinzregententheater",
+        "Munich Residenz",
+        "Schack galerie",
+        "Lenbachhaus",
+        "Staatstheater am Gaertnerplatz",
+        "Tierpark Hellabrunn"
+      ],
+      "key": "forecast.predicted",
+      "path": "Forecast Data/dataset_predicted.csv",
+      "rows": 4,
+      "sha256": "158345bdb764d1db21e70b517175c40719239c5c3fd198f0e8124eededca2ba0"
+    },
+    {
+      "bytes": 6521,
+      "columns": [
+        "place",
+        "latitude",
+        "longitude",
+        "city_district",
+        "address"
+      ],
+      "key": "recommendation.addresses",
+      "path": "geocoordinates/geoattractions.csv",
+      "rows": 34,
+      "sha256": "de8752a4a8e5c3fe4d9f87ba067802e25e1090f38c32e9e2c3b41339e4e029ba"
+    },
+    {
+      "bytes": 1474,
+      "columns": [
+        "Unnamed: 0",
+        "place",
+        "metric",
+        "city_district",
+        "type_door"
+      ],
+      "key": "recommendation.catalog",
+      "path": "Recommendation data/rec_dataset.csv",
+      "rows": 23,
+      "sha256": "95aa33a1c6c19858a2115164f3c692ef6e568d13b06539d3065f79245348f5e0"
+    },
+    {
+      "bytes": 3573,
+      "columns": [
+        "id",
+        "value"
+      ],
+      "key": "recommendation.countries",
+      "path": "geocoordinates/country.csv",
+      "rows": 249,
+      "sha256": "9e8b4b51f540b53b7377fea097230770f7e67abc45710265f68c09755911b11b"
+    },
+    {
+      "bytes": 23365,
+      "columns": [
+        "city",
+        "lat",
+        "lng",
+        "country",
+        "iso2",
+        "admin",
+        "capital",
+        "population",
+        "population_proper"
+      ],
+      "key": "recommendation.german_cities",
+      "path": "geocoordinates/germanCities.csv",
+      "rows": 365,
+      "sha256": "62b238e26b4d29fb27617d85e3a64d303773d3803ad825b82a13170a3a04c524"
+    },
+    {
+      "bytes": 237905,
+      "columns": [
+        "place_name",
+        "provenance_EU apart from GER",
+        "provenance_Munich",
+        "provenance_Outisde EU",
+        "provenance_outside Munich",
+        "visit_Traveled as a couple",
+        "visit_Traveled on business",
+        "visit_Traveled solo",
+        "visit_Traveled with family",
+        "visit_Traveled with friends"
+      ],
+      "key": "recommendation.users",
+      "path": "Recommendation data/user_data.csv",
+      "rows": 7150,
+      "sha256": "3d3756f94868179d2a690f7a7685d58013a385effe35b7ce4ae7bd6962f95029"
+    }
+  ],
+  "schema_version": 1
+}
