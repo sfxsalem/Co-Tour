@@ -18,7 +18,7 @@ pip-wheel-metadata/
 .ruff_cache/
 .worktrees/
 
-# Django runtime data
+# Runtime-generated data
 db.sqlite3
 *.sqlite3
 staticfiles/

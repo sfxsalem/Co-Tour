@@ -1,4 +1,4 @@
-"""ASGI entry point for the incremental Co-Tour migration."""
+"""ASGI entry point for the Co-Tour application."""
 
 from __future__ import annotations
 
@@ -202,7 +202,7 @@ def create_app(
     application.add_middleware(TrustedHostMiddleware, allowed_hosts=allowed_hosts)
     application.mount(
         "/static",
-        StaticFiles(directory=WEB_APP_DIRECTORY / "webapp" / "static"),
+        StaticFiles(directory=Path(__file__).parent / "static"),
         name="static",
     )
 

@@ -1,12 +1,18 @@
+import csv
 import json
+from pathlib import Path
 from unittest import TestCase
 from unittest.mock import patch
+from urllib.parse import quote
 from uuid import UUID
 
 from fastapi.testclient import TestClient
 
 from cotour_web.app import create_app
 from cotour_web.observability import request_logger
+
+
+WEB_APP_DIRECTORY = Path(__file__).resolve().parents[1]
 
 
 class FastAPIApplicationTests(TestCase):
@@ -122,6 +128,25 @@ class FastAPIApplicationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("CO-TOUR", response.text)
         self.assertIn("integrity=\"sha384-", response.text)
+
+    def test_fastapi_owns_its_static_stylesheet(self):
+        response = self.client.get("/static/css/fastapi.css")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("--accent", response.text)
+
+    def test_every_recommendation_catalog_place_has_an_image(self):
+        catalog_path = (
+            WEB_APP_DIRECTORY / "data" / "Recommendation data" / "rec_dataset.csv"
+        )
+        with catalog_path.open(newline="") as catalog:
+            places = {row["place"] for row in csv.DictReader(catalog)}
+
+        self.assertEqual(len(places), 23)
+        for place in sorted(places):
+            with self.subTest(place=place):
+                response = self.client.get(f"/static/img/{quote(place)}.jpg")
+                self.assertEqual(response.status_code, 200)
 
     def test_contact_page_is_server_rendered_without_a_dead_form(self):
         response = self.client.get("/contact/")

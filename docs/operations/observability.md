@@ -56,15 +56,10 @@ These thresholds are conservative starting points and must be tuned after real t
 
 ## Rollback
 
-The Django adapter is a temporary fallback while the FastAPI cutover stabilizes:
+Roll back at the release layer by redeploying the last verified immutable image or revision. Do not rebuild an old source checkout during an incident: rebuilding can resolve different dependencies or base-image layers. Record the active image digest before changing it, redeploy the known-good digest, then verify `/health`, `/health/ready`, and the affected route. Commit `c2a69cc` is the final verified revision before the Django adapter was retired.
 
-```bash
-docker compose stop web
-docker compose --profile rollback up --build -d django
-```
-
-Set a unique `DJANGO_SECRET_KEY` and the production security variables before starting the rollback profile. Restore FastAPI only after the triggering issue is understood and its regression test passes.
+Forward-fix only after the triggering issue is understood and covered by a regression test. A rollback must restore the complete application image and its matching analytics artifacts; the project no longer maintains a second web adapter.
 
 ## Stabilization evidence
 
-On 2026-07-20, the merged production image passed all public FastAPI HTML routes, all three APIs, OpenAPI generation, static assets, validation behavior, trusted-host rejection, security headers, and the contact no-storage contract. The Django rollback image passed all five legacy routes, security headers, and traversal rejection. Both temporary containers remained healthy and logged no runtime exception during the check.
+On 2026-07-20, the merged production image passed all public FastAPI HTML routes, all three APIs, OpenAPI generation, static assets, validation behavior, trusted-host rejection, security headers, and the contact no-storage contract. The retired Django fallback also passed its historical compatibility checks before removal. The FastAPI container remained healthy and logged no runtime exception during the check.

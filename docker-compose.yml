@@ -7,21 +7,3 @@ services:
     environment:
       LOKY_MAX_CPU_COUNT: "${LOKY_MAX_CPU_COUNT:-2}"
       FASTAPI_ALLOWED_HOSTS: "${FASTAPI_ALLOWED_HOSTS:-localhost,127.0.0.1,[::1]}"
-
-  django:
-    build: ./web_app
-    profiles: ["rollback"]
-    command: ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "2", "--threads", "2", "--access-logfile", "-", "web_app.wsgi:application"]
-    restart: unless-stopped
-    ports:
-      - "127.0.0.1:8001:8000"
-    environment:
-      DJANGO_SECRET_KEY: "${DJANGO_SECRET_KEY:-}"
-      DJANGO_DEBUG: "${DJANGO_DEBUG:-0}"
-      DJANGO_ALLOWED_HOSTS: "${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1,[::1]}"
-      DJANGO_CSRF_TRUSTED_ORIGINS: "${DJANGO_CSRF_TRUSTED_ORIGINS:-}"
-      DJANGO_SECURE_SSL_REDIRECT: "${DJANGO_SECURE_SSL_REDIRECT:-0}"
-      DJANGO_SESSION_COOKIE_SECURE: "${DJANGO_SESSION_COOKIE_SECURE:-0}"
-      DJANGO_CSRF_COOKIE_SECURE: "${DJANGO_CSRF_COOKIE_SECURE:-0}"
-      DJANGO_HSTS_SECONDS: "${DJANGO_HSTS_SECONDS:-0}"
-      LOKY_MAX_CPU_COUNT: "${LOKY_MAX_CPU_COUNT:-2}"
