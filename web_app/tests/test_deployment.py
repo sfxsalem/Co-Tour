@@ -13,6 +13,8 @@ class DefaultDeploymentTests(TestCase):
 
         self.assertIn('CMD ["uvicorn", "cotour_web.app:app"', dockerfile)
         self.assertNotIn('CMD ["gunicorn"', dockerfile)
+        self.assertIn('"--no-access-log"', dockerfile)
+        self.assertIn("http://127.0.0.1:8000/health/ready", dockerfile)
 
     def test_compose_exposes_fastapi_as_web_and_django_as_rollback(self):
         compose = yaml.safe_load(
