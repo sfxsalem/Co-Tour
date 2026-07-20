@@ -37,7 +37,7 @@ Prerequisites
 
 This project requires the following software:
 
- * Python 3.12
+ * Python 3.14
  * Docker with Docker Compose (optional)
 
 
@@ -60,7 +60,7 @@ FastAPI is the sole web adapter. It calls framework-independent recommendation, 
 Create a virtual environment and install the reproducible web dependency lock:
 
 ```bash
-python3.12 -m venv .venv
+python3.14 -m venv .venv
 source .venv/bin/activate
 pip install --require-hashes -r web_app/requirements.txt
 ```
