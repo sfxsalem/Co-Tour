@@ -54,6 +54,9 @@ jobs:
           PYTHONPATH: web_app
         run: python -m compileall -q web_app/cotour web_app/cotour_web
 
+      - name: Build production container
+        run: docker build --tag cotour:ci web_app
+
       - name: Validate forecast artifacts
         run: python -m unittest src/test_scaler_io.py
 

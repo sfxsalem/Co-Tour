@@ -72,7 +72,7 @@ cd web_app
 LOKY_MAX_CPU_COUNT=2 uvicorn cotour_web.app:app --reload
 ```
 
-The application is available at [http://localhost:8000](http://localhost:8000), its OpenAPI documentation at [http://localhost:8000/docs](http://localhost:8000/docs), and health check at [http://localhost:8000/health](http://localhost:8000/health). Every public route now has FastAPI parity:
+The application is available at [http://localhost:8000](http://localhost:8000), its OpenAPI documentation at [http://localhost:8000/docs](http://localhost:8000/docs), liveness check at [http://localhost:8000/health](http://localhost:8000/health), and readiness check at [http://localhost:8000/health/ready](http://localhost:8000/health/ready). Every public route now has FastAPI parity:
 
 - `/` — server-rendered home page
 - `/tourism_recommendation_system/` and `POST /api/v1/recommendations`
@@ -129,6 +129,13 @@ docker compose --profile rollback up --build -d django
 ```
 
 Never reuse a committed or shared Django secret. The rollback profile fails closed when its secret is absent.
+
+Operations
+----------
+
+FastAPI emits privacy-conscious JSON request logs with route, status, duration, and a validated correlation ID. Every response returns `X-Request-ID`; query strings and request bodies are not logged. The production health check verifies the local analytics catalogs through `/health/ready`.
+
+See the [observability and rollback runbook](docs/operations/observability.md) for the log schema, golden signals, initial alert thresholds, investigation flow, and rollback triggers.
 
 
 Additional Features

@@ -6,10 +6,11 @@ import os
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
+from time import perf_counter
 from typing import Annotated
 
 from fastapi import FastAPI, Form, HTTPException, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, ConfigDict, Field
@@ -32,6 +33,13 @@ from cotour.recommendations import (
     RecommendationService,
 )
 from cotour_web.flow_routes import router as flow_router
+from cotour_web.observability import (
+    configure_request_logger,
+    correlation_id,
+    exception_fields,
+    log_request,
+    request_event,
+)
 
 
 WEB_APP_DIRECTORY = Path(__file__).resolve().parents[1]
@@ -168,6 +176,7 @@ def create_app(
     forecast_service: ForecastService | None = None,
     flow_service: FlowService | None = None,
 ) -> FastAPI:
+    configure_request_logger()
     application = FastAPI(
         title="Co-Tour API",
         summary="Data-driven tourism recommendations and forecasts for Munich",
@@ -197,9 +206,7 @@ def create_app(
         name="static",
     )
 
-    @application.middleware("http")
-    async def security_headers(request: Request, call_next):
-        response = await call_next(request)
+    def add_security_headers(response):
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
@@ -212,9 +219,67 @@ def create_app(
         )
         return response
 
+    @application.middleware("http")
+    async def security_headers(request: Request, call_next):
+        return add_security_headers(await call_next(request))
+
+    @application.middleware("http")
+    async def observe_requests(request: Request, call_next):
+        request_id = correlation_id(request)
+        request.state.request_id = request_id
+        started_at = perf_counter()
+        try:
+            response = await call_next(request)
+        except Exception as exc:
+            event = request_event(
+                request,
+                request_id=request_id,
+                status_code=500,
+                started_at=started_at,
+            )
+            event.update(exception_fields(exc))
+            log_request(event, failed=True)
+            return add_security_headers(
+                JSONResponse(
+                    status_code=500,
+                    content={"detail": "Internal server error"},
+                    headers={"X-Request-ID": request_id},
+                )
+            )
+        response.headers["X-Request-ID"] = request_id
+        log_request(
+            request_event(
+                request,
+                request_id=request_id,
+                status_code=response.status_code,
+                started_at=started_at,
+            )
+        )
+        return response
+
     @application.get("/health", tags=["operations"])
     def health() -> dict[str, str]:
         return {"status": "ok"}
+
+    @application.get("/health/ready", tags=["operations"])
+    def readiness(request: Request) -> dict[str, str]:
+        try:
+            recommendation_options = (
+                request.app.state.recommendation_service.options()
+            )
+            forecast_options = request.app.state.forecast_service.options()
+            flow_options = request.app.state.flow_service.options()
+            if not (
+                recommendation_options.countries
+                and forecast_options.predicted_months
+                and flow_options.places
+            ):
+                raise RuntimeError("required option catalog is empty")
+        except Exception as exc:
+            raise HTTPException(
+                status_code=503, detail="Application dependencies are unavailable"
+            ) from exc
+        return {"status": "ready"}
 
     @application.get("/", response_class=HTMLResponse, include_in_schema=False)
     def home(request: Request):

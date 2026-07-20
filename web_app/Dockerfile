@@ -21,6 +21,6 @@ USER app
 EXPOSE 8000
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-    CMD python -c "import socket; socket.create_connection(('127.0.0.1', 8000), 2).close()"
+    CMD python -c "import urllib.request; response = urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=2); raise SystemExit(0 if response.status == 200 else 1)"
 
-CMD ["uvicorn", "cotour_web.app:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2", "--access-log"]
+CMD ["uvicorn", "cotour_web.app:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2", "--no-access-log"]

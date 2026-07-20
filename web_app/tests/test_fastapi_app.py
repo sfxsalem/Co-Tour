@@ -1,14 +1,19 @@
+import json
 from unittest import TestCase
+from unittest.mock import patch
+from uuid import UUID
 
 from fastapi.testclient import TestClient
 
 from cotour_web.app import create_app
+from cotour_web.observability import request_logger
 
 
 class FastAPIApplicationTests(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.client = TestClient(create_app())
+        request_logger.handlers.clear()
 
     def test_health_endpoint_and_security_headers(self):
         response = self.client.get("/health")
@@ -18,6 +23,93 @@ class FastAPIApplicationTests(TestCase):
         self.assertEqual(response.headers["x-content-type-options"], "nosniff")
         self.assertEqual(response.headers["x-frame-options"], "DENY")
         self.assertIn("default-src 'self'", response.headers["content-security-policy"])
+
+    def test_readiness_endpoint_checks_application_services(self):
+        response = self.client.get("/health/ready")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"status": "ready"})
+
+    def test_readiness_fails_closed_when_an_artifact_service_is_unavailable(self):
+        flow_service = self.client.app.state.flow_service
+        with patch.object(
+            flow_service, "options", side_effect=RuntimeError("private detail")
+        ):
+            response = self.client.get("/health/ready")
+
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(
+            response.json(), {"detail": "Application dependencies are unavailable"}
+        )
+        self.assertNotIn("private detail", response.text)
+
+    def test_requests_receive_a_correlation_id(self):
+        generated = self.client.get("/health")
+        supplied = self.client.get(
+            "/health", headers={"X-Request-ID": "release-check-20260720"}
+        )
+
+        UUID(generated.headers["x-request-id"])
+        self.assertEqual(
+            supplied.headers["x-request-id"], "release-check-20260720"
+        )
+
+    def test_invalid_correlation_id_is_not_reflected(self):
+        response = self.client.get(
+            "/health", headers={"X-Request-ID": "attacker value"}
+        )
+
+        UUID(response.headers["x-request-id"])
+        self.assertNotEqual(response.headers["x-request-id"], "attacker value")
+
+    def test_request_log_is_structured_and_avoids_query_values(self):
+        with self.assertLogs("cotour.requests", level="INFO") as captured:
+            response = self.client.get(
+                "/api/v1/tourist-flow?place=Olympiapark",
+                headers={"X-Request-ID": "structured-log-check"},
+            )
+
+        self.assertEqual(response.status_code, 200)
+        event = json.loads(captured.output[-1].split(":", maxsplit=2)[-1])
+        self.assertEqual(event["event"], "http_request")
+        self.assertEqual(event["request_id"], "structured-log-check")
+        self.assertEqual(event["method"], "GET")
+        self.assertEqual(event["route"], "/api/v1/tourist-flow")
+        self.assertEqual(event["status_code"], 200)
+        self.assertGreaterEqual(event["duration_ms"], 0)
+        self.assertNotIn("query", event)
+
+    def test_unmatched_paths_use_a_bounded_log_route(self):
+        with self.assertLogs("cotour.requests", level="INFO") as captured:
+            response = self.client.get("/not-a-real-user-supplied-path")
+
+        self.assertEqual(response.status_code, 404)
+        event = json.loads(captured.output[-1].split(":", maxsplit=2)[-1])
+        self.assertEqual(event["route"], "__unmatched__")
+
+    def test_unhandled_errors_are_generic_correlated_and_structured(self):
+        failing_app = create_app()
+
+        @failing_app.get("/test-failure")
+        def fail_for_test():
+            raise RuntimeError("private user-derived detail")
+
+        client = TestClient(failing_app)
+        request_logger.handlers.clear()
+        with self.assertLogs("cotour.requests", level="ERROR") as captured:
+            response = client.get(
+                "/test-failure", headers={"X-Request-ID": "failure-check-20260720"}
+            )
+
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.json(), {"detail": "Internal server error"})
+        self.assertEqual(response.headers["x-request-id"], "failure-check-20260720")
+        self.assertEqual(response.headers["x-frame-options"], "DENY")
+        self.assertEqual(response.headers["x-content-type-options"], "nosniff")
+        event = json.loads(captured.output[-1].split(":", maxsplit=2)[-1])
+        self.assertEqual(event["error_type"], "RuntimeError")
+        self.assertTrue(event["stack"])
+        self.assertNotIn("private user-derived detail", captured.output[-1])
 
     def test_rejects_untrusted_host(self):
         response = self.client.get("/health", headers={"Host": "attacker.example"})
