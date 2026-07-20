@@ -247,8 +247,9 @@ class FastAPIApplicationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Tourist Hotspot Forecast", response.text)
         self.assertIn('<svg role="img"', response.text)
-        self.assertEqual(response.text.count('data-testid="forecast-hotspot"'), 22)
+        self.assertEqual(response.text.count('data-testid="forecast-hotspot"'), 23)
         self.assertIn("Tierpark Hellabrunn", response.text)
+        self.assertIn("Munich Residenz", response.text)
 
     def test_hotspot_forecast_api_returns_typed_results(self):
         response = self.client.get("/api/v1/hotspot-forecast")
@@ -257,8 +258,11 @@ class FastAPIApplicationTests(TestCase):
         payload = response.json()
         self.assertEqual(payload["predicted_month"], "2020-07-01")
         self.assertEqual(payload["historical_month"], "2020-04-01")
-        self.assertEqual(len(payload["predicted"]), 22)
-        self.assertEqual(len(payload["historical"]), 22)
+        self.assertEqual(len(payload["predicted"]), 23)
+        self.assertEqual(len(payload["historical"]), 23)
+        self.assertIn(
+            "Munich Residenz", {point["name"] for point in payload["predicted"]}
+        )
         self.assertEqual(payload["top_attractions"][0], "Tierpark Hellabrunn")
         self.assertEqual(payload["predicted"][0]["color"], "darkred")
 

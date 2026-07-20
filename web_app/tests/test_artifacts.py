@@ -25,6 +25,10 @@ class ArtifactBundleTests(TestCase):
         self.assertEqual(len(bundle.recommendations.catalog), 23)
         self.assertEqual(len(bundle.forecasts.predicted), 4)
         self.assertEqual(len(bundle.flows.origins), 84)
+        self.assertEqual(bundle.manifest.allowed_ungeocoded_forecasts, ())
+        residence = bundle.forecasts.coordinates.loc["Munich Residenz"]
+        self.assertAlmostEqual(float(residence["latitude"]), 48.1411608)
+        self.assertAlmostEqual(float(residence["longitude"]), 11.57904463904056)
 
     def test_changed_artifact_fails_integrity_before_parsing(self):
         with TemporaryDirectory() as temporary_directory:
