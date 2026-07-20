@@ -9,7 +9,7 @@ from cotour.forecasts import (
 )
 
 
-DATA_DIRECTORY = Path(__file__).resolve().parents[2] / "data"
+DATA_DIRECTORY = Path(__file__).resolve().parents[1] / "data"
 
 
 class ForecastServiceTests(TestCase):
@@ -38,8 +38,9 @@ class ForecastServiceTests(TestCase):
 
         self.assertEqual(result.predicted_month, date(2020, 7, 1))
         self.assertEqual(result.historical_month, date(2020, 4, 1))
-        self.assertEqual(len(result.predicted), 22)
-        self.assertEqual(len(result.historical), 22)
+        self.assertEqual(len(result.predicted), 23)
+        self.assertEqual(len(result.historical), 23)
+        self.assertIn("Munich Residenz", {point.name for point in result.predicted})
         self.assertEqual(
             result.top_attractions,
             (

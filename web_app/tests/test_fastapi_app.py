@@ -8,6 +8,7 @@ from uuid import UUID
 
 from fastapi.testclient import TestClient
 
+from cotour.artifacts import ArtifactBundle
 from cotour_web.app import create_app
 from cotour_web.observability import request_logger
 
@@ -36,10 +37,16 @@ class FastAPIApplicationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"status": "ready"})
 
+    def test_default_services_share_one_validated_artifact_bundle(self):
+        bundle = self.client.app.state.artifact_bundle
+
+        self.assertIs(self.client.app.state.recommendation_service.artifacts, bundle)
+        self.assertIs(self.client.app.state.forecast_service.artifacts, bundle)
+        self.assertIs(self.client.app.state.flow_service.artifacts, bundle)
+
     def test_readiness_fails_closed_when_an_artifact_service_is_unavailable(self):
-        flow_service = self.client.app.state.flow_service
         with patch.object(
-            flow_service, "options", side_effect=RuntimeError("private detail")
+            ArtifactBundle, "assert_ready", side_effect=RuntimeError("private detail")
         ):
             response = self.client.get("/health/ready")
 
@@ -240,8 +247,9 @@ class FastAPIApplicationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Tourist Hotspot Forecast", response.text)
         self.assertIn('<svg role="img"', response.text)
-        self.assertEqual(response.text.count('data-testid="forecast-hotspot"'), 22)
+        self.assertEqual(response.text.count('data-testid="forecast-hotspot"'), 23)
         self.assertIn("Tierpark Hellabrunn", response.text)
+        self.assertIn("Munich Residenz", response.text)
 
     def test_hotspot_forecast_api_returns_typed_results(self):
         response = self.client.get("/api/v1/hotspot-forecast")
@@ -250,8 +258,11 @@ class FastAPIApplicationTests(TestCase):
         payload = response.json()
         self.assertEqual(payload["predicted_month"], "2020-07-01")
         self.assertEqual(payload["historical_month"], "2020-04-01")
-        self.assertEqual(len(payload["predicted"]), 22)
-        self.assertEqual(len(payload["historical"]), 22)
+        self.assertEqual(len(payload["predicted"]), 23)
+        self.assertEqual(len(payload["historical"]), 23)
+        self.assertIn(
+            "Munich Residenz", {point["name"] for point in payload["predicted"]}
+        )
         self.assertEqual(payload["top_attractions"][0], "Tierpark Hellabrunn")
         self.assertEqual(payload["predicted"][0]["color"], "darkred")
 

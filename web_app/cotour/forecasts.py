@@ -8,6 +8,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from cotour.artifacts import ArtifactBundle, load_artifact_bundle
+
 
 DEFAULT_PREDICTED_MONTH = date(2020, 7, 1)
 DEFAULT_HISTORICAL_MONTH = date(2020, 4, 1)
@@ -68,18 +70,16 @@ class ForecastResult:
 class ForecastService:
     """Load, validate, and query the repository's local forecast datasets."""
 
-    def __init__(self, data_directory: Path | str):
-        self.data_directory = Path(data_directory).resolve()
-        forecast_directory = self.data_directory / "Forecast Data"
-        self._predicted = self._load_forecasts(
-            forecast_directory / "dataset_predicted.csv"
+    def __init__(self, data_directory: Path | str | ArtifactBundle):
+        self.artifacts = (
+            data_directory
+            if isinstance(data_directory, ArtifactBundle)
+            else load_artifact_bundle(data_directory)
         )
-        self._historical = self._load_forecasts(
-            forecast_directory / "dataset.csv", ignored_columns={"AnzahlFall"}
-        )
-        self._coordinates = self._load_coordinates(
-            self.data_directory / "geocoordinates" / "State_geoattractions.csv"
-        )
+        self.data_directory = self.artifacts.root
+        self._predicted = self.artifacts.forecasts.predicted
+        self._historical = self.artifacts.forecasts.historical
+        self._coordinates = self.artifacts.forecasts.coordinates
 
     def options(self) -> ForecastOptions:
         return ForecastOptions(
@@ -103,41 +103,6 @@ class ForecastService:
             historical=historical,
             top_attractions=tuple(point.name for point in predicted[:10]),
         )
-
-    @staticmethod
-    def _load_forecasts(
-        path: Path, *, ignored_columns: set[str] | None = None
-    ) -> pd.DataFrame:
-        try:
-            dataset = pd.read_csv(path, parse_dates=["DATE"])
-        except (FileNotFoundError, KeyError, ValueError) as exc:
-            raise ForecastDataError(f"Unable to load forecast data from {path}") from exc
-
-        dataset = dataset.drop(columns=list(ignored_columns or ()), errors="ignore")
-        if dataset["DATE"].duplicated().any():
-            raise ForecastDataError(f"Forecast data contains duplicate months: {path}")
-
-        dataset = dataset.set_index("DATE").sort_index()
-        if dataset.empty or not dataset.columns.size:
-            raise ForecastDataError(f"Forecast data is empty: {path}")
-        try:
-            return dataset.apply(pd.to_numeric, errors="raise")
-        except (TypeError, ValueError) as exc:
-            raise ForecastDataError(f"Forecast weights must be numeric: {path}") from exc
-
-    @staticmethod
-    def _load_coordinates(path: Path) -> pd.DataFrame:
-        try:
-            coordinates = pd.read_csv(path)
-            required = coordinates.loc[:, ["place", "latitude", "longitude"]].copy()
-        except (FileNotFoundError, KeyError, ValueError) as exc:
-            raise ForecastDataError(f"Unable to load attraction coordinates from {path}") from exc
-        if required["place"].duplicated().any():
-            raise ForecastDataError(f"Attraction coordinates contain duplicate places: {path}")
-        required[["latitude", "longitude"]] = required[
-            ["latitude", "longitude"]
-        ].apply(pd.to_numeric, errors="coerce")
-        return required.dropna().set_index("place")
 
     def _hotspots_for(
         self, dataset: pd.DataFrame, requested_month: date, *, kind: str
