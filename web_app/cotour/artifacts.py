@@ -440,7 +440,7 @@ def build_manifest(root: Path, bundle_version: str) -> Path:
             {
                 "schema_version": SCHEMA_VERSION,
                 "bundle_version": bundle_version,
-                "contracts": {"allowed_ungeocoded_forecasts": ["Munich Residenz"]},
+                "contracts": {"allowed_ungeocoded_forecasts": []},
                 "files": files,
             },
             indent=2,

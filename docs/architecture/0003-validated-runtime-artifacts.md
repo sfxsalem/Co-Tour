@@ -18,9 +18,9 @@ Load the release eagerly through one `load_artifact_bundle` boundary. The loader
 
 Keep artifact storage local and concrete. A repository protocol, remote store, codec registry, and schema-migration framework will be introduced only if a second implementation becomes necessary.
 
-## Compatibility exception
+## Resolved data-quality issue
 
-The forecast catalog contains `Munich Residenz`, while the historical coordinate catalog contains `Residenztheater`. The manifest declares `Munich Residenz` as an allowed ungeocoded forecast so this structural change preserves the existing 22-point response. Correcting that source-data identity and removing the exception is separate data-quality work.
+The initial release manifest temporarily allowed `Munich Residenz` to be absent from the forecast-coordinate catalog because that catalog incorrectly contained the nearby `Residenztheater`. The coordinate identity was corrected from the repository's authoritative Munich Residenz record, the exception was removed, and forecast results now contain all 23 declared attractions.
 
 ## Consequences
 

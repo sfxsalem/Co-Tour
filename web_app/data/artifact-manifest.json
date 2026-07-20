@@ -1,9 +1,7 @@
 {
-  "bundle_version": "2026.07.1",
+  "bundle_version": "2026.07.2",
   "contracts": {
-    "allowed_ungeocoded_forecasts": [
-      "Munich Residenz"
-    ]
+    "allowed_ungeocoded_forecasts": []
   },
   "files": [
     {
@@ -1217,7 +1215,7 @@
       "sha256": "012e6c1a54a2d0a849c75f6d6025fc27b8e9e2c9edc800c21ae575742568a192"
     },
     {
-      "bytes": 4585,
+      "bytes": 4587,
       "columns": [
         "place",
         "latitude",
@@ -1228,7 +1226,7 @@
       "key": "forecast.coordinates",
       "path": "geocoordinates/State_geoattractions.csv",
       "rows": 23,
-      "sha256": "03018792bec391e938b9e81df0bf8f4c08bfa5129cda967b61c12426d929ef8f"
+      "sha256": "72c26b509d59ef7a36b4859592d2a3dd7743a25c49a5eb71fc76b1b987842178"
     },
     {
       "bytes": 113253,
