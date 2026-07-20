@@ -16,6 +16,7 @@ from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, ConfigDict, Field
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
+from cotour.artifacts import load_artifact_bundle
 from cotour.forecasts import (
     DEFAULT_HISTORICAL_MONTH,
     DEFAULT_PREDICTED_MONTH,
@@ -182,15 +183,17 @@ def create_app(
         summary="Data-driven tourism recommendations and forecasts for Munich",
         version="1.0.0",
     )
+    artifact_bundle = None
+    if service is None or forecast_service is None or flow_service is None:
+        artifact_bundle = load_artifact_bundle(WEB_APP_DIRECTORY / "data")
+    application.state.artifact_bundle = artifact_bundle
     application.state.recommendation_service = service or RecommendationService(
-        WEB_APP_DIRECTORY / "data"
+        artifact_bundle
     )
     application.state.forecast_service = forecast_service or ForecastService(
-        WEB_APP_DIRECTORY / "data"
+        artifact_bundle
     )
-    application.state.flow_service = flow_service or FlowService(
-        WEB_APP_DIRECTORY / "data"
-    )
+    application.state.flow_service = flow_service or FlowService(artifact_bundle)
     application.include_router(flow_router)
     allowed_hosts = [
         host.strip()
@@ -264,6 +267,8 @@ def create_app(
     @application.get("/health/ready", tags=["operations"])
     def readiness(request: Request) -> dict[str, str]:
         try:
+            if request.app.state.artifact_bundle is not None:
+                request.app.state.artifact_bundle.assert_ready()
             recommendation_options = (
                 request.app.state.recommendation_service.options()
             )
