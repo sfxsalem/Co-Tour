@@ -25,11 +25,11 @@ click==8.4.2 \
     # via uvicorn
 countrygroups==0.13.0 \
     --hash=sha256:c9884155df6092ed644a03d1bec94aabb1018ccfacdb68ae755675f29cbcb3c4
-    # via -r web_app/requirements.in
-fastapi==0.139.1 \
-    --hash=sha256:17faa81907751a8a85cd44c46f37fb576bde0078cb37de40bf1cd55de7104d87 \
-    --hash=sha256:99461bde7ac3fc34c78443da1f4dad3ca8f3182580029a2827692db216a8d7ae
-    # via -r web_app/requirements.in
+    # via -r requirements.in
+fastapi==0.139.2 \
+    --hash=sha256:333145a6891e9b5b3cfceb69baf817e8240cde4d4588ae5a10bf56ffacb6255e \
+    --hash=sha256:b9ad015a835173d59865e2f5d8296fbc2b317bf56a2ba1a5bfbdd03de2fd4b1c
+    # via -r requirements.in
 h11==0.16.0 \
     --hash=sha256:4e35b956cf45792e4caa5885e69fba00bdbc6ffafbfa020300e549b208ee5ff1 \
     --hash=sha256:63cf8bbe7522de3bf65932fda1d9c2772064ffb3dae62d55932da54b31cb6c86
@@ -95,7 +95,7 @@ httptools==0.8.0 \
 httpx2==2.7.0 \
     --hash=sha256:8b30709aed5c8465b0dd3b95c09ce301c8f79e7e7a2d00ab0af551e0d0375b07 \
     --hash=sha256:ed2a2719c696789e09493bd8e2bec3d8bd925cc6e26b68389ec25ade132f7bf4
-    # via -r web_app/requirements.in
+    # via -r requirements.in
 idna==3.18 \
     --hash=sha256:7f952cbe720b688055e3f87de14f5c3e5fdaa8bc3928985c4077ca689de849a2 \
     --hash=sha256:ffb385a7e039654cef1ab9ef32c6fafe283c0c0467bba1d9029738ce4a14a848
@@ -105,7 +105,7 @@ idna==3.18 \
 jinja2==3.1.6 \
     --hash=sha256:0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d \
     --hash=sha256:85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67
-    # via -r web_app/requirements.in
+    # via -r requirements.in
 joblib==1.5.3 \
     --hash=sha256:5fc3c5039fc5ca8c0276333a188bbd59d6b7ab37fe6632daa76bc7f9ec18e713 \
     --hash=sha256:8561a3269e6801106863fd0d6d84bb737be9e7631e33aaed3fb9ce5953688da3
@@ -251,7 +251,7 @@ numpy==2.5.1 \
     --hash=sha256:f7d60026c0bdb1380e83bfa7a0419c4577ee4b9a08880afcb6dadeb74c649fa2 \
     --hash=sha256:f7feb014281029e628ba2d5a007407443b06e418b6fe451d1e2adcbc8eba0107
     # via
-    #   -r web_app/requirements.in
+    #   -r requirements.in
     #   pandas
     #   scikit-learn
     #   scipy
@@ -304,7 +304,7 @@ pandas==3.0.3 \
     --hash=sha256:e3a2ec42c98ffa2565a67e08e218d06d72576d758d90facb7c00805194d8f360 \
     --hash=sha256:f8894dc474d648fe7b6ff0ca9b0bd73950d19952bc1a6534540762c5d79d305c \
     --hash=sha256:fed2ff7fd9779120e388e285fc029bd5cf9490cdd2e4166a9ee22c0e49a9ab09
-    # via -r web_app/requirements.in
+    # via -r requirements.in
 pydantic==2.13.4 \
     --hash=sha256:45a282cde31d808236fd7ea9d919b128653c8b38b393d1c4ab335c62924d9aba \
     --hash=sha256:c40756b57adaa8b1efeeced5c196f3f3b7c435f90e84ea7f443901bec8099ef6
@@ -442,7 +442,7 @@ python-dotenv==1.2.2 \
 python-multipart==0.0.32 \
     --hash=sha256:be54b7f3fa167bb83e4fcd936b887b708f4e57fe75911c02aebf53efaf8d938e \
     --hash=sha256:ff6d3f776f16878c894e52e107296ffc890e913c611b1a4ec6c44e2821fe2e23
-    # via -r web_app/requirements.in
+    # via -r requirements.in
 pyyaml==6.0.3 \
     --hash=sha256:00c4bdeba853cc34e7dd471f16b4114f4162dc03e6b7afcc2128711f0eca823c \
     --hash=sha256:0150219816b6a1fa26fb4699fb7daa9caf09eb1999f3b70fb6e786805e80375a \
@@ -518,7 +518,7 @@ pyyaml==6.0.3 \
     --hash=sha256:fa160448684b4e94d80416c0fa4aac48967a969efe22931448d853ada8baf926 \
     --hash=sha256:fc09d0aa354569bc501d4e787133afc08552722d3ab34836a80547331bb5d4a0
     # via
-    #   -r web_app/requirements.in
+    #   -r requirements.in
     #   uvicorn
 scikit-learn==1.9.0 \
     --hash=sha256:051075bda8b7aab87b1906ab3d4740a1e1224a19d7b3781a576736edc94e76aa \
@@ -552,7 +552,7 @@ scikit-learn==1.9.0 \
     --hash=sha256:f401448645a3e7bc115aa3c094097865155b34bff1cba8101857d9104e99074c \
     --hash=sha256:f7e254636164090da847715a27f8e5478feb98c40a9e0ee90cbd277de9e5ceb8 \
     --hash=sha256:fd3a8ef0c758555a3b23c03adaa858af32f7736785ded50ad5991f59c4ed03fa
-    # via -r web_app/requirements.in
+    # via -r requirements.in
 scipy==1.18.0 \
     --hash=sha256:09143f676d157d9f546d663504ef9c1becb819824f1afc018814176411942446 \
     --hash=sha256:0d13bca67c096d89fb95ced0d8921807300fce0275643aef9533cc63a0773468 \
@@ -634,7 +634,7 @@ typing-inspection==0.4.2 \
 uvicorn==0.51.0 \
     --hash=sha256:5d38af6cd620f2ae3849fb44fd4879e0890aa1febe8d47eb355fb45d93fe6a5b \
     --hash=sha256:f6f4b69b657c312f516dd2d268ab9ae6f254b11e4bac504f37b2ab58b24dd0b0
-    # via -r web_app/requirements.in
+    # via -r requirements.in
 uvloop==0.22.1 \
     --hash=sha256:017bd46f9e7b78e81606329d07141d3da446f8798c6baeec124260e22c262772 \
     --hash=sha256:0530a5fbad9c9e4ee3f2b33b148c6a64d47bbad8000ea63704fa8260f4cf728e \
